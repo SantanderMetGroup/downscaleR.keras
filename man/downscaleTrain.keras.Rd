@@ -17,7 +17,7 @@ Some arguments are the \href{https://keras.rstudio.com/reference/loss_mean_squar
 the  \href{https://www.rdocumentation.org/packages/kerasR/versions/0.6.1/topics/Optimizers}{optimizer}. An example could be:
 compile.args = list("loss" = "mse", "optimizer" = optimizer_adam(lr = 0.0001)). 
 The default parameters are those used by default in the official \href{https://keras.rstudio.com/reference/compile.html}{compile} keras function.
-Note that the \code{loss} and \code{optimizer} parameters have no default.}
+Note that the \code{loss} == "mse" and \code{optimizer} = optimizer_adam() as DEFAULT.}
 
 \item{fit.args}{List of arguments passed to \code{\link[keras]{fit}} function of keras.
 Arguments are those encountered in the \href{https://keras.rstudio.com/reference/fit.html}{fit R documentation}. An example could be:
@@ -65,7 +65,7 @@ inputs <- layer_input(shape = input_shape)
 hidden <- inputs \%>\% 
   layer_conv_2d(filters = 25, kernel_size = c(3,3), activation = 'relu') \%>\%  
   layer_conv_2d(filters = 10, kernel_size = c(3,3), activation = 'relu') \%>\% 
-  layer_flatten(l3) \%>\% 
+  layer_flatten() \%>\% 
   layer_dense(units = 10, activation = "relu")
 outputs <- layer_dense(hidden,units = output_shape)
 model <- keras_model(inputs = inputs, outputs = outputs)

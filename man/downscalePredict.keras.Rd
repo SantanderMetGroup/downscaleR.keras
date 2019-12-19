@@ -5,12 +5,13 @@
 \title{Downscale climate data for a a previous defined deep learning keras model.}
 \usage{
 downscalePredict.keras(newdata, model, C4R.template,
-  clear.session = FALSE, ...)
+  clear.session = FALSE)
 }
 \arguments{
 \item{newdata}{The grid data. It should be an object as returned by  \code{\link[downscaleR.keras]{prepareNewData.keras}}.}
 
-\item{model}{An object containing the statistical model as returned from  \code{\link[downscaleR.keras]{downscaleTrain.keras}}.}
+\item{model}{An object containing the statistical model as returned from  \code{\link[downscaleR.keras]{downscaleTrain.keras}} 
+or a list of arguments passed to \code{\link[keras]{load_model_hdf5}}.}
 
 \item{C4R.template}{A climate4R grid that serves as template for the returned prediction object.}
 
@@ -18,8 +19,6 @@ downscalePredict.keras(newdata, model, C4R.template,
 In particular, refers to whether we want to use the function \code{\link[keras]{k_clear_session}} after training.
 If FALSE, model is returned. If TRUE, then k_clear_session() is applied and no model is returned.
 Default to FALSE.}
-
-\item{...}{A list of arguments passed to \code{\link[transformeR]{aggregateGrid}} that will operate over the prediction.}
 }
 \value{
 A regular/irregular grid object.
@@ -62,7 +61,7 @@ inputs <- layer_input(shape = input_shape)
 hidden <- inputs \%>\% 
   layer_conv_2d(filters = 25, kernel_size = c(3,3), activation = 'relu') \%>\%  
   layer_conv_2d(filters = 10, kernel_size = c(3,3), activation = 'relu') \%>\% 
-  layer_flatten(l3) \%>\% 
+  layer_flatten() \%>\% 
   layer_dense(units = 10, activation = "relu")
 outputs <- layer_dense(hidden,units = output_shape)
 model <- keras_model(inputs = inputs, outputs = outputs)
