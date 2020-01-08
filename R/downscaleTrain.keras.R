@@ -42,6 +42,7 @@
 #' downscalePredict.keras for predicting with a keras model
 #' prepareNewData.keras for predictor preparation with new (test) data
 #' prepareData.keras for predictor preparation of training data
+#' \href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki} 
 #' @import keras
 #' @author J. Bano-Medina
 #' @family downscaling.functions

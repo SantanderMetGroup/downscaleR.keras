@@ -24,6 +24,7 @@
 #' downscaleTrain.keras for training a downscaling deep model with keras
 #' downscalePredict.keras for predicting with a keras model
 #' prepareData.keras for predictor preparation of training data
+#' \href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki} 
 #' @import keras
 #' @importFrom transformeR array3Dto2Dmat mat2Dto3Darray isRegular bindGrid redim getDim subsetGrid getVarNames 
 #' @export
