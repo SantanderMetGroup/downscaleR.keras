@@ -36,6 +36,7 @@
 #' \href{https://github.com/SantanderMetGroup/downscaleR/wiki/training-downscaling-models}{downscaleR Wiki} for downscaling seasonal forecasting and climate projections.
 #' @author J. Bano-Medina
 #' @import tensorflow
+#' @importFrom stats rgamma runif
 #' @export
 bernouilliGamma.statistics <- function(p,alpha,beta,
                                        simulate = FALSE,
@@ -74,7 +75,7 @@ bernouilliGamma.statistics <- function(p,alpha,beta,
     if (!is.null(bias)) amo <- amo %>% gridArithmetics(bias,operator = "+")
     makeMultiGrid(p,amo)
   }) %>% bindGrid() %>% redim(drop = TRUE)
-  out$Dates <- p$Dates
+  out$Variable$varName <- c("probOfRain","amountOfRain")
   return(out)
 }
 

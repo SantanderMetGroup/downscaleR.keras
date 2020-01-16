@@ -44,6 +44,7 @@ str(xy.t)
 downscaleTrain.keras for training a downscaling deep model with keras
 downscalePredict.keras for predicting with a keras model
 prepareData.keras for predictor preparation of training data
+\href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki}
 
 \href{https://github.com/SantanderMetGroup/downscaleR/wiki/preparing-predictor-data}{downscaleR Wiki} for preparing predictors for downscaling and seasonal forecasting.
 }

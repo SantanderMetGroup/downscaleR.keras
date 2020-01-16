@@ -18,6 +18,7 @@ This function uses \code{tensorflow} internally. Please if not, install tensorfl
 downscaleTrain.keras for training a downscaling deep model with keras
 downscalePredict.keras for predicting with a keras model
 prepareNewData.keras for predictor preparation with new (test) data
+\href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki} 
 \href{https://github.com/SantanderMetGroup/downscaleR/wiki/training-downscaling-models}{downscaleR Wiki} for downscaling seasonal forecasting and climate projections.
 }
 \seealso{

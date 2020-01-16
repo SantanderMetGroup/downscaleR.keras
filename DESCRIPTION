@@ -2,10 +2,11 @@ Package: downscaleR.keras
 Depends:
     R(>= 3.1.0),
     transformeR(>= 1.5.0),
-    keras(>=2.2.2),
-    tensorflow(>=2.0.0)
+    keras(>= 2.2.2),
+    tensorflow(>= 2.0.0)
 Imports:
     abind,
+    MASS,
     utils,
     parallel,
     stats,

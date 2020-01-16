@@ -95,8 +95,10 @@ downscaleTrain.keras(data,
 downscalePredict.keras for predicting with a keras model
 prepareNewData.keras for predictor preparation with new (test) data
 prepareData.keras for predictor preparation of training data
+\href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki}
 
-Other downscaling.functions: \code{\link{downscalePredict.keras}}
+Other downscaling.functions: \code{\link{downscalePredict.keras}},
+  \code{\link{relevanceMaps}}
 }
 \author{
 J. Bano-Medina

@@ -28,6 +28,9 @@ A named list with components \code{y} (the predictand), \code{x.global} (global 
 \description{
 Configuration of data for flexible downscaling keras experiment definition
 }
+\details{
+Remove days containing NA in at least one predictand site.
+}
 \examples{
 # Loading data
 require(transformeR)
@@ -49,6 +52,7 @@ str(data)
 downscaleTrain.keras for training a downscaling deep model with keras
 downscalePredict.keras for predicting with a keras model
 prepareNewData.keras for predictor preparation with new (test) data
+\href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki}
 
 \href{https://github.com/SantanderMetGroup/downscaleR/wiki/preparing-predictor-data}{downscaleR Wiki} for preparing predictors for downscaling and seasonal forecasting.
 }

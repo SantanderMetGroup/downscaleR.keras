@@ -1,3 +1,19 @@
+##     downscalePredict.keras.R Downscale climate data for a a previous defined deep learning keras model.
+##
+##     Copyright (C) 2018 Santander Meteorology Group (http://www.meteo.unican.es)
+##
+##     This program is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU General Public License as published by
+##     the Free Software Foundation, either version 3 of the License, or
+##     (at your option) any later version.
+## 
+##     This program is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU General Public License for more details.
+## 
+##     You should have received a copy of the GNU General Public License
+##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #' @title Downscale climate data for a a previous defined deep learning keras model.
 #' @description Downscale data to local scales by deep learning models previously obtained by \code{\link[downscaleR.keras]{downscaleTrain.keras}}.
 #' @param newdata The grid data. It should be an object as returned by  \code{\link[downscaleR.keras]{prepareNewData.keras}}.
@@ -115,5 +131,9 @@ downscalePredict.keras <- function(newdata,
   
   pred <- do.call("bindGrid",pred) %>% redim(drop = TRUE)
   pred$Dates <- attr(newdata,"dates")
+  if (n.vars > 1) {
+    pred$Variable$varName <- paste0(pred$Variable$varName,1:n.vars)
+    pred$Dates <- rep(list(pred$Dates),n.vars)
+  }
   return(pred)
 }

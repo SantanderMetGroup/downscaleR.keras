@@ -4,7 +4,8 @@
 \alias{bernouilliGamma.statistics}
 \title{Computing statistics from a Bernouilli-Gamma distribution.}
 \usage{
-bernouilliGamma.statistics(p, alpha, beta, simulate = FALSE, bias = 0)
+bernouilliGamma.statistics(p, alpha, beta, simulate = FALSE,
+  bias = NULL)
 }
 \arguments{
 \item{p}{A string with values "conv" o "dense" depending on the type of the net's last connection. DEFAULT is NULL.}
@@ -16,7 +17,7 @@ bernouilliGamma.statistics(p, alpha, beta, simulate = FALSE, bias = 0)
 \item{simulate}{A logical value. If TRUE then the output is an stochastic sample for the given distribution parameters (p,alpha and beta).}
 
 \item{bias}{An integer. Added to the quantity of rain after its computation, either deterministically or
-stochastically. It basically displaces the distribution. Default is 0.}
+stochastically. It basically displaces the distribution. Default is NULL.}
 }
 \description{
 This function permits to sample from a Bernouill-Gamma distribution or to compute the expectance of the function
@@ -29,10 +30,11 @@ This function uses \code{tensorflow} internally. Please if not, install tensorfl
 downscaleTrain.keras for training a downscaling deep model with keras
 downscalePredict.keras for predicting with a keras model
 prepareNewData.keras for predictor preparation with new (test) data
+\href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki} 
 \href{https://github.com/SantanderMetGroup/downscaleR/wiki/training-downscaling-models}{downscaleR Wiki} for downscaling seasonal forecasting and climate projections.
 }
 \seealso{
-bernouilliGamma.statistics for computing the expectance or simulate from the discrete continuous distribution
+bernouilliGamma.loss_function a custom loss function for Bernouilli-Gamma distributions
 }
 \author{
 J. Bano-Medina
