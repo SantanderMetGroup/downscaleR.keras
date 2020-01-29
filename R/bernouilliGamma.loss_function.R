@@ -45,9 +45,9 @@ bernouilliGamma.loss_function <- function(last.connection = NULL) {
   } else if (last.connection == "conv") {
     custom_metric("custom_loss", function(true, pred){
       K = backend()
-      ocurrence = pred[,,,1, drop = FALSE]
-      shape_parameter = tf$exp(pred[,,,2, drop = FALSE])
-      scale_parameter = tf$exp(pred[,,,3, drop = FALSE])
+      ocurrence = pred[,,,1, drop = TRUE]
+      shape_parameter = tf$exp(pred[,,,2, drop = TRUE])
+      scale_parameter = tf$exp(pred[,,,3, drop = TRUE])
       bool_rain = tf$cast(tf$greater(true,0),tf$float32)
       epsilon = 0.000001
       return (- tf$reduce_mean((1-bool_rain)*tf$math$log(1-ocurrence+epsilon) + bool_rain*(tf$math$log(ocurrence+epsilon) + (shape_parameter - 1)*tf$math$log(true+epsilon) - shape_parameter*tf$math$log(scale_parameter+epsilon) - tf$math$lgamma(shape_parameter+epsilon) - true/(scale_parameter+epsilon))))

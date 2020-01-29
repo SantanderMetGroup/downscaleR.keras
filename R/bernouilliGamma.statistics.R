@@ -78,26 +78,3 @@ bernouilliGamma.statistics <- function(p,alpha,beta,
   out$Variable$varName <- c("probOfRain","amountOfRain")
   return(out)
 }
-
-
-
-
-# # Stochastic Prediction
-# simulate_ocu <- function(dat,model,D){
-#   ocu <- model$predict(dat)[,1:D,drop = FALSE]
-#   sim <- matrix(runif(length(ocu),min = 0,max = 1), nrow = nrow(ocu), ncol = ncol(ocu))
-#   cond <- ocu > sim
-#   return(cond*1)
-# }
-# 
-# simulate_reg <- function(dat,model,D) {
-#   shape <- exp(model$predict(dat)[,(D+1):(D*2),drop = FALSE])
-#   scale <- exp(model$predict(dat)[,(D*2+1):(D*3),drop = FALSE])
-#   p <- matrix(nrow = nrow(dat),ncol = D)
-#   for (i in 1:D) {
-#     p[,i] <- rgamma(n = nrow(dat), shape = shape[,i], scale = scale[,i])
-#   }
-#   return(p)
-# }
-# predSTO_ocu <- simulate_ocu(x,model,D)
-# predSTO_reg <- simulate_reg(x,model,D) + 1

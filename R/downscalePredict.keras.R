@@ -103,11 +103,11 @@ downscalePredict.keras <- function(newdata,
   })
   names(pred) <- paste("member", 1:n.mem, sep = "_")
   if (isTRUE(clear.session)) k_clear_session()
-  ind <- attr(newdata,"indices_noNA_y")
-  n.vars <- ncol(pred[[1]])/length(ind)
   
+  template <- C4R.template
   if (attr(newdata,"last.connection") == "dense") {
-    template <- C4R.template
+    ind <- attr(newdata,"indices_noNA_y")
+    n.vars <- ncol(pred[[1]])/length(ind)
     if (isRegular(template)) {ncol.aux <- array3Dto2Dmat(template$Data) %>% ncol()} else {ncol.aux <- getShape(template,dimension = "loc")}
     pred <- lapply(1:n.mem,FUN = function(z) {
       aux <- matrix(nrow = nrow(pred[[z]]), ncol = ncol.aux)
@@ -117,20 +117,33 @@ downscalePredict.keras <- function(newdata,
         aux
       })
     })
-  }
+  } 
   dimNames <- attr(template$Data,"dimensions")
   pred <- lapply(1:n.mem, FUN = function(z) {
-    lapply(1:n.vars, FUN = function(zz) {
-      template$Data <- pred[[z]][[zz]]
-      attr(template$Data,"dimensions") <- dimNames
-      if (isRegular(template))  template <- redim(template, var = FALSE)
-      if (!isRegular(template)) template <- redim(template, var = FALSE, loc = TRUE)
-      return(template)
-    }) %>% makeMultiGrid()
+    if (attr(newdata,"last.connection") == "dense") {
+      lapply(1:n.vars, FUN = function(zz) {
+        template$Data <- pred[[z]][[zz]]
+        attr(template$Data,"dimensions") <- dimNames
+        if (isRegular(template))  template <- redim(template, var = FALSE)
+        if (!isRegular(template)) template <- redim(template, var = FALSE, loc = TRUE)
+        return(template)
+      }) %>% makeMultiGrid()
+    } else {
+      if (attr(newdata,"channels") == "first") n.vars <- dim(pred$member_1)[2]
+      if (attr(newdata,"channels") == "last")  n.vars <- dim(pred$member_1)[4]
+      lapply(1:n.vars, FUN = function(zz) {
+        if (attr(newdata,"channels") == "first") template$Data <- pred[[z]] %>% aperm(c(2,1,3,4))
+        if (attr(newdata,"channels") == "last")  template$Data <- pred[[z]] %>% aperm(c(4,1,2,3))
+        template$Data <- template$Data[zz,,,,drop = FALSE]
+        attr(template$Data,"dimensions") <- c("var","time","lat","lon")
+        return(template)
+      }) %>% makeMultiGrid()
+    }
   })
   
   pred <- do.call("bindGrid",pred) %>% redim(drop = TRUE)
   pred$Dates <- attr(newdata,"dates")
+  n.vars <- getShape(redim(pred,var = TRUE),"var")
   if (n.vars > 1) {
     pred$Variable$varName <- paste0(pred$Variable$varName,1:n.vars)
     pred$Dates <- rep(list(pred$Dates),n.vars)
