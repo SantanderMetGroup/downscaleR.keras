@@ -9,4 +9,4 @@ devtools::install_github("SantanderMetGroup/downscaleR.keras")
 
 The functions within this package contain illustrative examples, however, we refer the reader to the jupyter notebooks developed for the paper "Configuration and intercomparison of deep learning neural models for statistical downscaling" submitted to the Geoscientific Model and Development journal on September 2019. These can be found in the [github deep notebooks repository of the Santander Meteorology Group](https://github.com/SantanderMetGroup/DeepDownscaling).
 
-**NOTE:** Note that other climate4R libraries (e.g., `transformeR`) as well as `keras (v >= 2.2)` and `tensorflow (v >= 2.0)` libraries are dependencies of this package.
+**NOTE:** Note that other climate4R libraries (e.g., `transformeR`) as well as `keras (v >= 2.2)` and `tensorflow (v >= 2.0)` are dependencies of this package.
