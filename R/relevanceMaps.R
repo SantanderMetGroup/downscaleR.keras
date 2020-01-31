@@ -51,6 +51,7 @@
 relevanceMaps <- function(x,obj,
                           C4R.template,
                           model,
+                          outputCoords,
                           bernouilliGamma = FALSE,
                           parch = c("channel","variable","all"),
                           l,num_samples) {
@@ -66,18 +67,18 @@ relevanceMaps <- function(x,obj,
     vars <- unique(attr(x$Variable, "description"))
     n <- lapply(vars, FUN = function(z) which(attr(x$Variable, "description") == z))
   }
-  Coords <- obj$y$xyCoords;Coords$x <- obj$y$xyCoords$y;Coords$y <- obj$y$xyCoords$x
-  matCoords <- obj$y$xyCoords
-  matCoords$x <- expand.grid(Coords)$y;matCoords$y <- expand.grid(Coords)$x
-  ind <- attr(obj,"indices_noNA_y")
   
-  pKnown <- prepareNewData.keras(x,obj) %>% downscalePredict.keras(model,C4R.template = C4R.template)
+  pKnown <- prepareNewData.keras(x,obj) %>% downscalePredict.keras(model,C4R.template = C4R.template)  
   if (isTRUE(bernouilliGamma)) {
+    pKnown <- lapply(c("pr1","pr2","pr3"),FUN = function(z) interpGrid(subsetGrid(pKnown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
+      makeMultiGrid() 
     pKnown <- bernouilliGamma.statistics(p = subsetGrid(pKnown,var = "pr1"),
                                          alpha = subsetGrid(pKnown,var = "pr2"),
                                          beta = subsetGrid(pKnown,var = "pr3"),
                                          simulate = FALSE)
     pKnown <- gridArithmetics(subsetGrid(pKnown,var = "probOfRain"),subsetGrid(pKnown,var = "amountOfRain"))
+  } else {
+    pKnown <- interpGrid(pKnown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
   }
   out <- lapply(1:nl, FUN = function(z) {
     lapply(1:nL, FUN = function(zz) {
@@ -102,6 +103,8 @@ relevanceMaps <- function(x,obj,
         rm(xw)
         gc()
         if (isTRUE(bernouilliGamma)) {
+          pUnknown <- lapply(c("pr1","pr2","pr3"),FUN = function(z) interpGrid(subsetGrid(pUnknown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
+            makeMultiGrid() 
           pUnknown <- bernouilliGamma.statistics(p = subsetGrid(pUnknown,var = "pr1"),
                                                  alpha = subsetGrid(pUnknown,var = "pr2"),
                                                  beta = subsetGrid(pUnknown,var = "pr3"),
@@ -117,16 +120,13 @@ relevanceMaps <- function(x,obj,
                           latLim = x$xyCoords$y[ind_zk],
                           lonLim = x$xyCoords$x[ind_zzk]) %>% 
           redim(var = TRUE,member = FALSE)
-        lapply(1:ncol(obj$y$Data),FUN = function(mem) {
+        lapply(1:nrow(outputCoords),FUN = function(mem) {
           for (zk in 1:length(ind_zk)) {
             for (zzk in 1:length(ind_zzk)) {
-              out$Data[1,,zk,zzk] <- subsetGrid(infl,
-                                                lonLim = matCoords$x[ind[mem]],
-                                                latLim = matCoords$y[ind[mem]])$Data
+              out$Data[1,,zk,zzk] <- subsetDimension(infl,dimension = "loc",indices = mem)$Data
             }
           }
           attr(out$Data,"dimensions") <- c("var","time","lat","lon")
-          rm(infl)
           gc()
           return(out)
         }) %>% bindGrid(dimension = "member")
@@ -134,7 +134,7 @@ relevanceMaps <- function(x,obj,
     }) %>% bindGrid(dimension = "lon")
   }) %>% bindGrid(dimension = "lat")
   gc()
-  attr(out,"memberCoords") <- matCoords
+  attr(out,"memberCoords") <- list("x" = outputCoords[,1],"y" = outputCoords[,2])
   k_clear_session()
   return(out)
 }
