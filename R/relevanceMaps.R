@@ -80,9 +80,11 @@ relevanceMaps <- function(x,obj,
   } else {
     pKnown <- interpGrid(pKnown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
   }
-  out <- lapply(1:nl, FUN = function(z) {
-    lapply(1:nL, FUN = function(zz) {
-      lapply(n, FUN = function(zzz) {
+  for (z in 1:nl) {
+    for (zz in 1:nL) {
+      nn <- 0
+      for (zzz in n) {
+        nn <- nn + 1
         gc()
         print(paste(z,"out of",length(1:nl)))
         print(paste(zz,"out of",length(1:nL)))
@@ -120,7 +122,7 @@ relevanceMaps <- function(x,obj,
                           latLim = x$xyCoords$y[ind_zk],
                           lonLim = x$xyCoords$x[ind_zzk]) %>% 
           redim(var = TRUE,member = FALSE)
-        lapply(1:nrow(outputCoords),FUN = function(mem) {
+        out <- lapply(1:nrow(outputCoords),FUN = function(mem) {
           for (zk in 1:length(ind_zk)) {
             for (zzk in 1:length(ind_zzk)) {
               out$Data[1,,zk,zzk] <- subsetDimension(infl,dimension = "loc",indices = mem)$Data
@@ -130,10 +132,28 @@ relevanceMaps <- function(x,obj,
           gc()
           return(out)
         }) %>% bindGrid(dimension = "member")
-      }) %>% makeMultiGrid()
-    }) %>% bindGrid(dimension = "lon")
-  }) %>% bindGrid(dimension = "lat")
-  gc()
+        save(out,file = paste0("./chunk_",z,"_",zz,"_",nn,".rda"))
+        rm(out,pUnknown,infl)
+        gc()
+      } 
+    } 
+  }
+  for (z in 1:nl) {
+    for (zz in 1:nL) {
+      lf <- list.files(".", pattern =  paste0("chunk_",z,"_",zz,"_"), full.names = TRUE)
+      out <- lapply(lf, function(z) mget(load(z))) %>% unlist(recursive = FALSE) %>% makeMultiGrid()
+      save(out, file = paste0("chunk_",z,"_",zz,".rda"))
+      file.remove(lf)
+    }
+    lf <- list.files(".", pattern =  paste0("chunk_",z), full.names = TRUE)
+    out <- lapply(lf, function(z) mget(load(z))) %>% unlist(recursive = FALSE) %>% bindGrid(dimension = "lon")
+    save(out, file = paste0("chunk_",z,".rda"))
+    file.remove(lf)
+  }
+  lf <- list.files(".", pattern =  paste0("chunk_"), full.names = TRUE)
+  out <- lapply(lf, function(z) mget(load(z))) %>% unlist(recursive = FALSE) %>% bindGrid(dimension = "lat")
+  file.remove(lf)
+  
   attr(out,"memberCoords") <- list("x" = outputCoords[,1],"y" = outputCoords[,2])
   k_clear_session()
   return(out)
