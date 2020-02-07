@@ -80,7 +80,7 @@ relevanceMaps <- function(x,obj,
   } else {
     pKnown <- interpGrid(pKnown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
   }
-  for (z in 1:nl) {
+  for (z in 6:nl) {
     gc(reset = TRUE)
     for (zz in 1:nL) {
       nn <- 0
