@@ -81,6 +81,7 @@ relevanceMaps <- function(x,obj,
     pKnown <- interpGrid(pKnown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
   }
   for (z in 1:nl) {
+    gc(reset = TRUE)
     for (zz in 1:nL) {
       nn <- 0
       for (zzz in n) {
@@ -132,9 +133,10 @@ relevanceMaps <- function(x,obj,
           gc()
           return(out)
         }) %>% bindGrid(dimension = "member")
+        gc()
         save(out,file = paste0("./chunk_",z,"_",zz,"_",nn,".rda"))
         rm(out,pUnknown,infl)
-        gc()
+        gc(reset = TRUE)
       } 
     } 
   }
