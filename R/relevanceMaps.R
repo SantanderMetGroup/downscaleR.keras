@@ -80,7 +80,7 @@ relevanceMaps <- function(x,obj,
   } else {
     pKnown <- interpGrid(pKnown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
   }
-  for (z in 6:nl) {
+  for (z in 1:nl) {
     gc(reset = TRUE)
     for (zz in 1:nL) {
       nn <- 0
@@ -99,11 +99,13 @@ relevanceMaps <- function(x,obj,
         xw <- rep(list(redim(x,member = TRUE)),num_samples) %>% bindGrid(dimension = "member")
         xw$Data[zzz,1:num_samples,,ind_zk,ind_zzk] <- sampleMultivariateGaussian(xk,xl,num_samples)
         attr(xw$Data,"dimensions") <- c("var","member","time","lat","lon")
-        rm(xk,xl)
+        xk <- NULL; xl <- NULL
+        # rm(xk,xl)
         gc()
         pUnknown <- prepareNewData.keras(xw,obj) %>%  
           downscalePredict.keras(model,C4R.template) 
-        rm(xw)
+        xw <- NULL
+        # rm(xw)
         gc()
         if (isTRUE(bernouilliGamma)) {
           pUnknown <- lapply(c("pr1","pr2","pr3"),FUN = function(z) interpGrid(subsetGrid(pUnknown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
@@ -117,7 +119,8 @@ relevanceMaps <- function(x,obj,
         pUnknown <- aggregateGrid(pUnknown,aggr.mem = list(FUN = "mean", na.rm = TRUE)) %>%
           redim(drop = TRUE)
         infl <- gridArithmetics(pUnknown,pKnown,operator = "-")
-        rm(pUnknown)
+        pUnknown <- NULL
+        # rm(pUnknown)
         gc()
         out <- subsetGrid(x,var = getVarNames(x)[zzz[1]],
                           latLim = x$xyCoords$y[ind_zk],
@@ -135,8 +138,10 @@ relevanceMaps <- function(x,obj,
         }) %>% bindGrid(dimension = "member")
         gc()
         save(out,file = paste0("./chunk_",z,"_",zz,"_",nn,".rda"))
-        rm(out,pUnknown,infl)
-        gc(reset = TRUE)
+        out <- NULL; infl <- NULL
+        # rm(out,infl)
+        gc(full = TRUE)
+        gc()
       } 
     } 
   }
