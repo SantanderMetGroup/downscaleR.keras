@@ -54,9 +54,9 @@ relevanceMaps <- function(x,obj,
                           outputCoords,
                           bernouilliGamma = FALSE,
                           parch = c("channel","variable","all"),
-                          l,num_samples) {
-  k <- 0
-  if (is.list(model)) model <- do.call("load_model_hdf5",model)
+                          k = 0, l = 2, num_samples = 10) {
+  # k <- 0
+  # if (is.list(model)) model <- do.call("load_model_hdf5",model)
   
   nl <- getShape(x,"lat")
   nL <- getShape(x,"lon")
@@ -68,7 +68,7 @@ relevanceMaps <- function(x,obj,
     n <- lapply(vars, FUN = function(z) which(attr(x$Variable, "description") == z))
   }
   
-  pKnown <- prepareNewData.keras(x,obj) %>% downscalePredict.keras(model,C4R.template = C4R.template)  
+  pKnown <- prepareNewData.keras(x,obj) %>% downscalePredict.keras(model,clear.session = TRUE,C4R.template = C4R.template)  
   if (isTRUE(bernouilliGamma)) {
     pKnown <- lapply(c("pr1","pr2","pr3"),FUN = function(z) interpGrid(subsetGrid(pKnown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
       makeMultiGrid() 
@@ -81,7 +81,7 @@ relevanceMaps <- function(x,obj,
     pKnown <- interpGrid(pKnown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
   }
   for (z in 1:nl) {
-    gc(reset = TRUE)
+    gc()
     for (zz in 1:nL) {
       nn <- 0
       for (zzz in n) {
@@ -100,12 +100,10 @@ relevanceMaps <- function(x,obj,
         xw$Data[zzz,1:num_samples,,ind_zk,ind_zzk] <- sampleMultivariateGaussian(xk,xl,num_samples)
         attr(xw$Data,"dimensions") <- c("var","member","time","lat","lon")
         xk <- NULL; xl <- NULL
-        # rm(xk,xl)
         gc()
         pUnknown <- prepareNewData.keras(xw,obj) %>%  
-          downscalePredict.keras(model,C4R.template) 
+          downscalePredict.keras(model,C4R.template,clear.session = TRUE) 
         xw <- NULL
-        # rm(xw)
         gc()
         if (isTRUE(bernouilliGamma)) {
           pUnknown <- lapply(c("pr1","pr2","pr3"),FUN = function(z) interpGrid(subsetGrid(pUnknown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
@@ -120,11 +118,10 @@ relevanceMaps <- function(x,obj,
           redim(drop = TRUE)
         infl <- gridArithmetics(pUnknown,pKnown,operator = "-")
         pUnknown <- NULL
-        # rm(pUnknown)
         gc()
         out <- subsetGrid(x,var = getVarNames(x)[zzz[1]],
-                          latLim = x$xyCoords$y[ind_zk],
-                          lonLim = x$xyCoords$x[ind_zzk]) %>% 
+                          latLim = c(x$xyCoords$y[ind_zk][1],x$xyCoords$y[ind_zk][length(ind_zk)]),
+                          lonLim = c(x$xyCoords$x[ind_zzk][1],x$xyCoords$x[ind_zzk][length(ind_zzk)])) %>% 
           redim(var = TRUE,member = FALSE)
         out <- lapply(1:nrow(outputCoords),FUN = function(mem) {
           for (zk in 1:length(ind_zk)) {
@@ -137,14 +134,20 @@ relevanceMaps <- function(x,obj,
           return(out)
         }) %>% bindGrid(dimension = "member")
         gc()
-        save(out,file = paste0("./chunk_",z,"_",zz,"_",nn,".rda"))
+        if (nn < 10) {nnn <- paste0(0,nn)} else {nnn <- nn}
+        save(out,file = paste0("./chunk_",z,"_",zz,"_",nnn,".rda"))
         out <- NULL; infl <- NULL
-        # rm(out,infl)
-        gc(full = TRUE)
+        k_clear_session()
         gc()
-      } 
+      }
+      k_clear_session()
+      gc()
     } 
+    k_clear_session()
+    gc()
   }
+  k_clear_session()
+  gc()
   for (z in 1:nl) {
     for (zz in 1:nL) {
       lf <- list.files(".", pattern =  paste0("chunk_",z,"_",zz,"_"), full.names = TRUE)
@@ -152,7 +155,7 @@ relevanceMaps <- function(x,obj,
       save(out, file = paste0("chunk_",z,"_",zz,".rda"))
       file.remove(lf)
     }
-    lf <- list.files(".", pattern =  paste0("chunk_",z), full.names = TRUE)
+    lf <- list.files(".", pattern =  paste0("chunk_",z,"_"), full.names = TRUE)
     out <- lapply(lf, function(z) mget(load(z))) %>% unlist(recursive = FALSE) %>% bindGrid(dimension = "lon")
     save(out, file = paste0("chunk_",z,".rda"))
     file.remove(lf)
@@ -187,7 +190,7 @@ sampleMultivariateGaussian <- function(xk,xl,num_samples) {
   paramJoint <- jointProbDist(xl)
   paramCond <- condProbDist(ind_k,ind_l,xl,paramJoint)
   n <- dim(paramCond$means)[1]
-  xs <- lapply(1:n, FUN = function(z) MASS::mvrnorm(n = num_samples, paramCond$means[z,], paramCond$cov)) %>% 
+  xs <- lapply(1:n, FUN = function(z) MASS::mvrnorm(n = num_samples, paramCond$means[z,], paramCond$cov, tol = 10)) %>% 
     abind(along = 3) %>% aperm(c(1,3,2))
   dim(xs) <- c(num_samples,dims)
   xs <- aperm(xs,c(5,1,2,3,4)) 
