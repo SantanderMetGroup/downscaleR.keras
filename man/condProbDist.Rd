@@ -7,11 +7,13 @@
 condProbDist(index_k, index_l, xl, paramJoint)
 }
 \arguments{
-\item{xl}{Predictors of a domain of size ((2l+1)x(2l+1))}
+\item{index_k}{Indices of the predictors of domain k.}
 
-\item{xk}{Predictors of a domain of size ((2k+1)x(2k+1))}
+\item{index_l}{Indices of the predictors of domain k.}
 
-\item{num_samples}{A numeric value. How many times do we sample from the multivariate gaussian distribution.}
+\item{xl}{Predictors of domain l.}
+
+\item{paramJoint}{Parameters from the joint gaussian distribution.}
 }
 \value{
 Parameters (means and covariance matrix) from the multivariate joint gaussian distribution.

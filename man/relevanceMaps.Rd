@@ -4,8 +4,9 @@
 \alias{relevanceMaps}
 \title{Obtain relevance maps as a climate4R object}
 \usage{
-relevanceMaps(x, obj, C4R.template, model, bernouilliGamma = FALSE,
-  parch = c("channel", "variable", "all"), l, num_samples)
+relevanceMaps(x, obj, C4R.template, model, outputCoords,
+  bernouilliGamma = FALSE, parch = c("channel", "variable", "all"),
+  k = 0, l = 2, num_samples = 10)
 }
 \arguments{
 \item{x}{A grid (usually a multigrid) of predictor fields.}
@@ -16,6 +17,9 @@ relevanceMaps(x, obj, C4R.template, model, bernouilliGamma = FALSE,
 
 \item{model}{A keras sequential or functional model.}
 
+\item{outputCoords}{A matrix. The coordinates of the predictand(s) gridpoints for whom the
+prediction difference analysis is desired. Longitudes in the first column and latitudes in the second column.}
+
 \item{bernouilliGamma}{A logical value. Indicates whether the \code{\link[downscaleR.keras]{bernouilliGamma.loss_function}}
 was used to train the model in \code{\link[downscaleR.keras]{downscaleTrain.keras}}. Default is FALSE.}
 
@@ -24,9 +28,13 @@ a certain gridpoint as a whole ("all"), to isolate the influence per variable
 ("variable", i.e., for example to isolate the influence of the specific humidity at all levels: hus500,hus700,...) 
 or of every channel (i.e., "channel") independently.}
 
+\item{k}{A numeric value. Defines the domain to marginalize around a particular feature with coordinates (i,j). 
+Therefore the new domain has dimensions (i-k:i+k,j-k:j+k). If k=1, then a region of 3x3 is simultaneously marginalized 
+at every step.}
+
 \item{l}{A numeric value. Defines the domain ((2l+1)x(2l+1)) used to infer the conditional multivariate gaussian distribution}
 
-\item{num_samples}{A numeric value. How many times do we sample from the multivariate gaussian distribution.}
+\item{num_samples}{A numeric value. How many times do we sample from the multivariate gaussian distribution?}
 }
 \value{
 A climate 4R object containing the relevance maps as members. The attribute attr(out,"memberCoords") is added to the climate4R output object

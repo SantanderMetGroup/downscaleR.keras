@@ -24,14 +24,19 @@
 #' @param obj The object as returned by \code{\link[downscaleR.keras]{prepareData.keras}}.
 #' @param model A keras sequential or functional model. 
 #' @param C4R.template A climate4R grid that serves as template for the returned prediction object.
+#' @param outputCoords A matrix. The coordinates of the predictand(s) gridpoints for whom the
+#' prediction difference analysis is desired. Longitudes in the first column and latitudes in the second column.
 #' @param bernouilliGamma A logical value. Indicates whether the \code{\link[downscaleR.keras]{bernouilliGamma.loss_function}}
 #' was used to train the model in \code{\link[downscaleR.keras]{downscaleTrain.keras}}. Default is FALSE.
 #' @param parch Possible values are c("all","variable","channel"). Indicates whether we want to marginalize the influence of
 #' a certain gridpoint as a whole ("all"), to isolate the influence per variable 
 #' ("variable", i.e., for example to isolate the influence of the specific humidity at all levels: hus500,hus700,...) 
 #' or of every channel (i.e., "channel") independently.
+#' @param k A numeric value. Defines the domain to marginalize around a particular feature with coordinates (i,j). 
+#' Therefore the new domain has dimensions (i-k:i+k,j-k:j+k). If k=1, then a region of 3x3 is simultaneously marginalized 
+#' at every step.
 #' @param l A numeric value. Defines the domain ((2l+1)x(2l+1)) used to infer the conditional multivariate gaussian distribution
-#' @param num_samples A numeric value. How many times do we sample from the multivariate gaussian distribution.
+#' @param num_samples A numeric value. How many times do we sample from the multivariate gaussian distribution?
 #' @details This function relies on keras, which is a high-level neural networks API capable of running on top of tensorflow, CNTK or theano.
 #' There are official \href{https://keras.rstudio.com/}{keras tutorials} regarding how to build deep learning models. We suggest the user, especially the beginners,
 #' to consult these tutorials before using the downscaleR.keras package. Moreover, we encourage the reader to consult 
@@ -46,7 +51,7 @@
 #' @family downscaling.functions
 #' @importFrom MASS mvrnorm ginv
 #' @importFrom abind abind
-#' @importFrom transformeR aggregateGrid
+#' @importFrom transformeR aggregateGrid mergeGrid interpGrid subsetDimension
 #' @export
 relevanceMaps <- function(x,obj,
                           C4R.template,
@@ -173,7 +178,7 @@ relevanceMaps <- function(x,obj,
 #' @description Sample from a multivariate conditional distribution such that p(xk|xl).
 #' @param xk Predictors of a domain of size ((2k+1)x(2k+1))
 #' @param xl Predictors of a domain of size ((2l+1)x(2l+1))
-#' @param num_samples
+#' @param num_samples A numeric value. How many times do we sample from the multivariate gaussian distribution? 
 #' @return A nested list of 2D matrices with the following structure: sites/members
 #' @keywords internal
 #' @author J. Baño-Medina    
@@ -198,9 +203,10 @@ sampleMultivariateGaussian <- function(xk,xl,num_samples) {
 }
 #' @title Infer a multivariate conditional distribution.
 #' @description Infer a multivariate conditional distribution such that p(xk|xl).
-#' @param xk Predictors of a domain of size ((2k+1)x(2k+1))
-#' @param xl Predictors of a domain of size ((2l+1)x(2l+1))
-#' @param num_samples A numeric value. How many times do we sample from the multivariate gaussian distribution.
+#' @param index_k Indices of the predictors of domain k.
+#' @param index_l Indices of the predictors of domain k.
+#' @param xl Predictors of domain l.
+#' @param paramJoint Parameters from the joint gaussian distribution.
 #' @return Parameters (means and covariance matrix) from the multivariate joint gaussian distribution.
 #' @keywords internal
 #' @author J. Baño-Medina
@@ -219,7 +225,7 @@ condProbDist <- function(index_k,index_l,xl,paramJoint) {
 }
 #' @title Infer a multivariate joint distribution.
 #' @description Infer a multivariate joint distribution such that p(xl).
-#' @param xl Predictors of a domain of size ((2l+1)x(2l+1))
+#' @param xl Predictors of domain l.
 #' @return Parameters (means and covariance matrix) from the multivariate joint gaussian distribution.
 #' @keywords internal
 #' @importFrom stats cov

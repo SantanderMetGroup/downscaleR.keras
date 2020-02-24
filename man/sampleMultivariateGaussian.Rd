@@ -10,6 +10,8 @@ sampleMultivariateGaussian(xk, xl, num_samples)
 \item{xk}{Predictors of a domain of size ((2k+1)x(2k+1))}
 
 \item{xl}{Predictors of a domain of size ((2l+1)x(2l+1))}
+
+\item{num_samples}{A numeric value. How many times do we sample from the multivariate gaussian distribution?}
 }
 \value{
 A nested list of 2D matrices with the following structure: sites/members

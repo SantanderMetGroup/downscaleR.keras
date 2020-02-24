@@ -7,7 +7,7 @@
 jointProbDist(xl)
 }
 \arguments{
-\item{xl}{Predictors of a domain of size ((2l+1)x(2l+1))}
+\item{xl}{Predictors of domain l.}
 }
 \value{
 Parameters (means and covariance matrix) from the multivariate joint gaussian distribution.
