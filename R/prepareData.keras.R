@@ -27,11 +27,12 @@
 #' in the array. If "first" then dimensions = c("channel","latitude","longitude") for regular grids or c("channel","loc") for irregular grids.
 #' If "last" then dimensions = c("latitude","longitude","channel") for regular grids or c("loc","channel") for irregular grids.
 #' @return A named list with components \code{y} (the predictand), \code{x.global} (global predictors) and other attributes. See Examples.
+#' @details Remove days containing NA in at least one predictand site.
 #' @seealso 
 #' downscaleTrain.keras for training a downscaling deep model with keras
 #' downscalePredict.keras for predicting with a keras model
 #' prepareNewData.keras for predictor preparation with new (test) data
-#'  
+#' \href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki} 
 #' @importFrom transformeR getTemporalIntersection getRefDates getCoordinates getVarNames
 #' @importFrom magrittr %<>% %>% 
 #' @import keras

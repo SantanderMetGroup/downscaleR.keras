@@ -2,9 +2,11 @@ Package: downscaleR.keras
 Depends:
     R(>= 3.1.0),
     transformeR(>= 1.5.0),
-    keras
+    keras(>= 2.2.2),
+    tensorflow(>= 2.0.0)
 Imports:
     abind,
+    MASS,
     utils,
     parallel,
     stats,
@@ -17,8 +19,8 @@ Suggests:
     rmarkdown
 Type: Package
 Title: A climate4R package for statistical downscaling <http://meteo.unican.es/climate4r>
-Version: 3.1.0
-Date: 2019-07-09
+Version: 0.0.0
+Date: 2020-02-24
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Joaquín Bedia <bediaj@unican.es> [aut, cre]",
