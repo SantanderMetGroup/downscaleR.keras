@@ -113,7 +113,9 @@ relevanceMaps <- function(x,obj,
                                                  beta = subsetGrid(pUnknown,var = "pr3"),
                                                  simulate = FALSE)
           pUnknown <- gridArithmetics(subsetGrid(pUnknown,var = "probOfRain"),subsetGrid(pUnknown,var = "amountOfRain"))
-        }    
+        } else {
+          pUnknown <- interpGrid(pUnknown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
+        }   
         pUnknown <- aggregateGrid(pUnknown,aggr.mem = list(FUN = "mean", na.rm = TRUE)) %>%
           redim(drop = TRUE)
         infl <- gridArithmetics(pUnknown,pKnown,operator = "-")
@@ -155,13 +157,11 @@ relevanceMaps <- function(x,obj,
       save(out, file = paste0("chunk_",z,"_",zz,".rda"))
       file.remove(lf)
     }
-    lf <- list.files(".", pattern =  paste0("chunk_",z,"_"), full.names = TRUE)
-    out <- lapply(lf, function(z) mget(load(z))) %>% unlist(recursive = FALSE) %>% bindGrid(dimension = "lon")
-    save(out, file = paste0("chunk_",z,".rda"))
-    file.remove(lf)
   }
+  
   lf <- list.files(".", pattern =  paste0("chunk_"), full.names = TRUE)
-  out <- lapply(lf, function(z) mget(load(z))) %>% unlist(recursive = FALSE) %>% bindGrid(dimension = "lat")
+  out <- lapply(lf, function(z) mget(load(z))) %>% unlist(recursive = FALSE)
+  out <- mergeGrid(out,aggr.fun = list(FUN = "mean",na.rm = TRUE))
   file.remove(lf)
   
   attr(out,"memberCoords") <- list("x" = outputCoords[,1],"y" = outputCoords[,2])
