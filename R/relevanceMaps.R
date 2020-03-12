@@ -60,9 +60,8 @@ relevanceMaps <- function(x,obj,
                           bernouilliGamma = FALSE,
                           parch = c("channel","variable","all"),
                           k = 0, l = 2, num_samples = 10) {
-  # k <- 0
-  # if (is.list(model)) model <- do.call("load_model_hdf5",model)
   
+  ntime <- getShape(x,"time")
   nl <- getShape(x,"lat")
   nL <- getShape(x,"lon")
   nv <- getShape(x,"var")
@@ -166,7 +165,11 @@ relevanceMaps <- function(x,obj,
   
   lf <- list.files(".", pattern =  paste0("chunk_"), full.names = TRUE)
   out <- lapply(lf, function(z) mget(load(z))) %>% unlist(recursive = FALSE)
-  out <- mergeGrid(out,aggr.fun = list(FUN = "mean",na.rm = TRUE))
+  out <- lapply(1:ntime, FUN = function(zz){
+    lapply(1:length(out), FUN = function(z){
+      subsetDimension(out[[z]],dimension = "time", indices = zz)
+    }) %>% mergeGrid(aggr.fun = list(FUN = "mean",na.rm = TRUE))
+  }) %>% bindGrid(dimension = "time")
   file.remove(lf)
   
   attr(out,"memberCoords") <- list("x" = outputCoords[,1],"y" = outputCoords[,2])
@@ -195,7 +198,7 @@ sampleMultivariateGaussian <- function(xk,xl,num_samples) {
   paramJoint <- jointProbDist(xl)
   paramCond <- condProbDist(ind_k,ind_l,xl,paramJoint)
   n <- dim(paramCond$means)[1]
-  xs <- lapply(1:n, FUN = function(z) MASS::mvrnorm(n = num_samples, paramCond$means[z,], paramCond$cov, tol = 10)) %>% 
+  xs <- lapply(1:n, FUN = function(z) MASS::mvrnorm(n = num_samples, paramCond$means[z,], paramCond$cov, tol = 10000)) %>% 
     abind(along = 3) %>% aperm(c(1,3,2))
   dim(xs) <- c(num_samples,dims)
   xs <- aperm(xs,c(5,1,2,3,4)) 
