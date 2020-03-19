@@ -99,7 +99,7 @@ relevanceMaps <- function(x,obj,
         ind_zl <- ((z-l):(z+l))[which((z-l):(z+l) > 0 & (z-l):(z+l) <= nl)]
         ind_zzl <- ((zz-l):(zz+l))[which((zz-l):(zz+l) > 0 & (zz-l):(zz+l) <= nL)]
         xk <- x$Data[zzz,,ind_zk,ind_zzk,drop = FALSE] 
-        xl <- x$Data[,,ind_zl,ind_zzl]
+        xl <- x$Data[,,ind_zl,ind_zzl,drop = FALSE]
         xw <- rep(list(redim(x,member = TRUE)),num_samples) %>% bindGrid(dimension = "member")
         xw$Data[zzz,1:num_samples,,ind_zk,ind_zzk] <- sampleMultivariateGaussian(xk,xl,num_samples)
         attr(xw$Data,"dimensions") <- c("var","member","time","lat","lon")

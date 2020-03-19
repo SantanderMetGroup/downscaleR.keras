@@ -65,7 +65,7 @@ prepareNewData.keras <- function(newdata,data.structure) {
   newdata <- newdata %>% redim(var = TRUE)
   n.mem <- getShape(newdata, "member")
   newdata.global.list <- lapply(1:n.mem, function(j) {
-    newdata <- subsetGrid(newdata,members = j)
+    newdata <- subsetGrid(newdata,members = j) %>% redim(member = FALSE, var = TRUE)
     if (first.connection == "dense") {
       if (isRegular(newdata)) {
         x.global <- lapply(getVarNames(newdata), FUN = function(z){
