@@ -4,8 +4,13 @@
 \alias{prepareData.keras}
 \title{Configuration of data for downscaling with a keras model}
 \usage{
-prepareData.keras(x, y, first.connection = c("dense", "conv"),
-  channels = c("first", "last"), last.connection = c("dense", "conv"))
+prepareData.keras(
+  x,
+  y,
+  first.connection = c("dense", "conv"),
+  channels = c("first", "last"),
+  last.connection = c("dense", "conv")
+)
 }
 \arguments{
 \item{x}{A grid (usually a multigrid) of predictor fields}

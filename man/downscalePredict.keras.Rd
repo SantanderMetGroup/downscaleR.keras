@@ -4,8 +4,7 @@
 \alias{downscalePredict.keras}
 \title{Downscale climate data for a a previous defined deep learning keras model.}
 \usage{
-downscalePredict.keras(newdata, model, C4R.template,
-  clear.session = FALSE)
+downscalePredict.keras(newdata, model, C4R.template, clear.session = FALSE)
 }
 \arguments{
 \item{newdata}{The grid data. It should be an object as returned by  \code{\link[downscaleR.keras]{prepareNewData.keras}}.}
@@ -89,8 +88,9 @@ downscalePredict.keras for predicting with a keras model
 prepareNewData.keras for predictor preparation with new (test) data
 \href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki}
 
-Other downscaling.functions: \code{\link{downscaleTrain.keras}},
-  \code{\link{relevanceMaps}}
+Other downscaling.functions: 
+\code{\link{downscaleTrain.keras}()},
+\code{\link{relevanceMaps}()}
 }
 \author{
 J. Bano-Medina

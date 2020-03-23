@@ -4,9 +4,18 @@
 \alias{relevanceMaps}
 \title{Obtain relevance maps as a climate4R object}
 \usage{
-relevanceMaps(x, obj, C4R.template, model, outputCoords,
-  bernouilliGamma = FALSE, parch = c("channel", "variable", "all"),
-  k = 0, l = 2, num_samples = 10)
+relevanceMaps(
+  x,
+  obj,
+  C4R.template,
+  model,
+  outputCoords,
+  bernouilliGamma = FALSE,
+  parch = c("channel", "variable", "all"),
+  k = 0,
+  l = 2,
+  num_samples = 10
+)
 }
 \arguments{
 \item{x}{A grid (usually a multigrid) of predictor fields.}
@@ -56,8 +65,9 @@ the prediction difference analysis technique employed
 which is published in this \href{https://arxiv.org/pdf/1702.04595.pdf}{paper}.
 }
 \seealso{
-Other downscaling.functions: \code{\link{downscalePredict.keras}},
-  \code{\link{downscaleTrain.keras}}
+Other downscaling.functions: 
+\code{\link{downscalePredict.keras}()},
+\code{\link{downscaleTrain.keras}()}
 }
 \author{
 J. Bano-Medina

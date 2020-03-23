@@ -4,8 +4,7 @@
 \alias{bernouilliGamma.statistics}
 \title{Computing statistics from a Bernouilli-Gamma distribution.}
 \usage{
-bernouilliGamma.statistics(p, alpha, beta, simulate = FALSE,
-  bias = NULL)
+bernouilliGamma.statistics(p, alpha, beta, simulate = FALSE, bias = NULL)
 }
 \arguments{
 \item{p}{A string with values "conv" o "dense" depending on the type of the net's last connection. DEFAULT is NULL.}

@@ -1,0 +1,6 @@
+# downscaleR.keras changelog
+
+## v0.0.2 (23 Mar 2020)
+ * NEWS
+ * minor changes in prepareNewData.keras and relevanceMaps
+ 

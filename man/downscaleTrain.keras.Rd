@@ -4,8 +4,13 @@
 \alias{downscaleTrain.keras}
 \title{Train a deep model with keras in the climate4R framework}
 \usage{
-downscaleTrain.keras(obj, model, compile.args = list(object = model),
-  fit.args = list(object = model), clear.session = FALSE)
+downscaleTrain.keras(
+  obj,
+  model,
+  compile.args = list(object = model),
+  fit.args = list(object = model),
+  clear.session = FALSE
+)
 }
 \arguments{
 \item{obj}{The object as returned by \code{\link[downscaleR.keras]{prepareData.keras}}.}
@@ -97,8 +102,9 @@ prepareNewData.keras for predictor preparation with new (test) data
 prepareData.keras for predictor preparation of training data
 \href{https://github.com/SantanderMetGroup/downscaleR.keras/wiki}{downscaleR.keras Wiki}
 
-Other downscaling.functions: \code{\link{downscalePredict.keras}},
-  \code{\link{relevanceMaps}}
+Other downscaling.functions: 
+\code{\link{downscalePredict.keras}()},
+\code{\link{relevanceMaps}()}
 }
 \author{
 J. Bano-Medina

@@ -41,5 +41,5 @@ Encoding: UTF-8
 Description: Tools for climate downscaling with deep neural networks models building on keras, as part of the climate4R bundle (<http://meteo.unican.es/climate4R>).
 License: GPL (>= 3)
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr
