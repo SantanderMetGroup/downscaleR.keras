@@ -4,3 +4,6 @@
  * NEWS
  * minor changes in prepareNewData.keras and relevanceMaps
  
+## v0.0.3 (on-going) 
+ * Concrete Dropout layers
+ * Gaussian.loss_function(), which minimizes the negative log-likelihood of a Gaussian distribution.

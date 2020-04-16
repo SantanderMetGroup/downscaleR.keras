@@ -1,4 +1,4 @@
-##     bernouilliGamma.loss_function.R Custom loss function for BernouilliGamma distributions.
+##     Gaussian.loss_function.R Custom loss function for BernouilliGamma distributions.
 ##
 ##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
@@ -15,12 +15,12 @@
 ##     You should have received a copy of the GNU General Public License
 ##     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' @title Custom loss function for Bernouilli-Gamma distributions.
-#' @description This loss function optimizes the negative log-likelihood of a Bernouill-Gamma distribution. It is a custom
+#' @title Custom loss function for Gaussian distributions.
+#' @description This loss function optimizes the negative log-likelihood of a Gaussian distribution. It is a custom
 #' loss function defined according to keras functions.
 #' @param last.connection A string with values "conv" o "dense" depending on the type of the net's last connection. DEFAULT is NULL.
 #' @seealso 
-#' bernouilliGamma.statistics for computing the expectance or simulate from the discrete continuous distribution
+#' bernouilliGamma.loss_function for computing the negative log-likelihood of a Bernouilli-Gamma distribution
 #' downscaleTrain.keras for training a downscaling deep model with keras
 #' downscalePredict.keras for predicting with a keras model
 #' prepareNewData.keras for predictor preparation with new (test) data
@@ -29,27 +29,23 @@
 #' @author J. Bano-Medina
 #' @import tensorflow
 #' @export
-bernouilliGamma.loss_function <- function(last.connection = NULL) {
+Gaussian.loss_function <- function(last.connection = NULL) {
   if (last.connection == "dense") {
     custom_metric("custom_loss", function(true, pred){
       K <- backend()
-      D <- K$int_shape(pred)[[2]]/3
-      ocurrence = pred[,1:D]
-      shape_parameter = tf$exp(pred[,(D+1):(D*2)])
-      scale_parameter = tf$exp(pred[,(D*2+1):(D*3)])
-      bool_rain = tf$cast(tf$greater(true,0),tf$float32)
-      epsilon = 0.000001
-      return (- tf$reduce_mean((1-bool_rain)*tf$math$log(1-ocurrence+epsilon) + bool_rain*(tf$math$log(ocurrence+epsilon) + (shape_parameter - 1)*tf$math$log(true+epsilon) - shape_parameter*tf$math$log(scale_parameter+epsilon) - tf$math$lgamma(shape_parameter+epsilon) - true/(scale_parameter+epsilon))))
+      D <- K$int_shape(pred)[[2]]/2
+      mean <- pred[, 1:D]
+      log_var <- pred[, (D+1):(D*2)]
+      precision <- tf$exp(-log_var)
+      return(tf$reduce_mean(precision * (true - mean) ^ 2 + log_var))
     })
   } else if (last.connection == "conv") {
     custom_metric("custom_loss", function(true, pred){
-      K = backend()
-      ocurrence = pred[,,,1, drop = TRUE]
-      shape_parameter = tf$exp(pred[,,,2, drop = TRUE])
-      scale_parameter = tf$exp(pred[,,,3, drop = TRUE])
-      bool_rain = tf$cast(tf$greater(true,0),tf$float32)
-      epsilon = 0.000001
-      return (- tf$reduce_mean((1-bool_rain)*tf$math$log(1-ocurrence+epsilon) + bool_rain*(tf$math$log(ocurrence+epsilon) + (shape_parameter - 1)*tf$math$log(true+epsilon) - shape_parameter*tf$math$log(scale_parameter+epsilon) - tf$math$lgamma(shape_parameter+epsilon) - true/(scale_parameter+epsilon))))
+      K <- backend()
+      mean <- pred[,,,1, drop = TRUE]
+      log_var <- pred[,,,2, drop = TRUE]
+      precision <- tf$exp(-log_var)
+      return(tf$reduce_mean(precision * (true - mean) ^ 2 + log_var))
     })
   }
 }
