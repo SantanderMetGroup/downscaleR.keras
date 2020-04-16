@@ -1,4 +1,4 @@
-##     SpatialConcreteDropout.R Custom class layer with concrete dropout.
+##     spatialConcreteDropout.R Custom class layer with concrete dropout.
 ##
 ##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
@@ -24,7 +24,7 @@
 #' @author J. Bano-Medina
 #' @export
 # R6 wrapper class, a subclass of KerasWrapper
-SpatialConcreteDropout <- R6::R6Class("SpatialConcreteDropout",
+spatialConcreteDropout <- R6::R6Class("spatialConcreteDropout",
                                
                                inherit = KerasWrapper,
                                
@@ -157,7 +157,7 @@ layer_spatial_concrete_dropout <- function(object,
                                    name = NULL,
                                    trainable = TRUE,
                                    data.format = "channels_last") {
-  create_wrapper(SpatialConcreteDropout, object, list(
+  create_wrapper(spatialConcreteDropout, object, list(
     layer = layer,
     weight_regularizer = weight_regularizer,
     dropout_regularizer = dropout_regularizer,

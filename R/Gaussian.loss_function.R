@@ -29,7 +29,7 @@
 #' @author J. Bano-Medina
 #' @import tensorflow
 #' @export
-Gaussian.loss_function <- function(last.connection = NULL) {
+gaussian.loss_function <- function(last.connection = NULL) {
   if (last.connection == "dense") {
     custom_metric("custom_loss", function(true, pred){
       K <- backend()
