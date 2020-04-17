@@ -37,7 +37,7 @@ gaussian.loss_function <- function(last.connection = NULL) {
       mean <- pred[, 1:D]
       log_var <- pred[, (D+1):(D*2)]
       precision <- tf$exp(-log_var)
-      return(tf$reduce_mean(precision * (true - mean) ^ 2 + log_var))
+      return(tf$reduce_mean( 0.5 * precision * (true - mean) ^ 2 +  0.5 * log_var))
     })
   } else if (last.connection == "conv") {
     custom_metric("custom_loss", function(true, pred){
@@ -45,7 +45,7 @@ gaussian.loss_function <- function(last.connection = NULL) {
       mean <- pred[,,,1, drop = TRUE]
       log_var <- pred[,,,2, drop = TRUE]
       precision <- tf$exp(-log_var)
-      return(tf$reduce_mean(precision * (true - mean) ^ 2 + log_var))
+      return(tf$reduce_mean(0.5 * precision * (true - mean) ^ 2 + 0.5 * log_var))
     })
   }
 }
