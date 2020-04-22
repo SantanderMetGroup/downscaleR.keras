@@ -15,8 +15,8 @@ loss function defined according to keras functions.
 }
 \details{
 Note that infering a conditional Bernouilli-Gamma distribution means to estimate their associated parameters:
-probability ($p$), shape ($\alpha$) and scale ($\beta$) factor. To avoid computational instabilities
-we actually estimate $log \alpha$ and $log \beta$. Therefore, make sure that your output layers are designed according
+probability, shape and scale factor. To avoid computational instabilities
+we actually estimate log alpha and log beta. Therefore, make sure that your output layers are designed according
 to this property of the distribution.
 }
 \seealso{

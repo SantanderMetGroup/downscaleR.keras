@@ -15,8 +15,8 @@ loss function defined according to keras functions.
 }
 \details{
 Note that infering a conditional gaussian distribution means to estimate their associated parameters:
-mean ($\mu$), and variance ($\sigma ^2$). To avoid computational instabilities
-we actually estimate $log \sigma ^2$. Therefore, make sure that your output layers are designed according
+mean, and variance. To avoid computational instabilities
+we actually estimate log var. Therefore, make sure that your output layers are designed according
 to this property of the distribution.
 }
 \seealso{

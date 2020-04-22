@@ -20,8 +20,8 @@
 #' loss function defined according to keras functions.
 #' @param last.connection A string with values "conv" o "dense" depending on the type of the net's last connection. DEFAULT is NULL.
 #' @details Note that infering a conditional gaussian distribution means to estimate their associated parameters:
-#' mean ($\mu$), and variance ($\sigma ^2$). To avoid computational instabilities
-#' we actually estimate $log \sigma ^2$. Therefore, make sure that your output layers are designed according
+#' mean, and variance. To avoid computational instabilities
+#' we actually estimate log var. Therefore, make sure that your output layers are designed according
 #' to this property of the distribution.
 #' @seealso 
 #' bernouilliGammaLoss for computing the negative log-likelihood of a Bernouilli-Gamma distribution
