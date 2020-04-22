@@ -1,4 +1,4 @@
-##     bernouilliGamma.statistics.R Custom loss function for BernouilliGamma distributions.
+##     bernouilliGammaStatistics.R Custom loss function for BernouilliGamma distributions.
 ##
 ##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
@@ -24,10 +24,11 @@
 #' @param simulate A logical value. If TRUE then the output is an stochastic sample for the given distribution parameters (p,alpha and beta).
 #' @param bias An integer. Added to the quantity of rain after its computation, either deterministically or
 #' stochastically. It basically displaces the distribution. Default is NULL.
-#' @details The output of a function is a multigrid object (see \code{\link[transformeR]{makeMultiGrid}}) with 2 variables: 
+#' @details The output of a function is a multigrid object (see \code{\link[transformeR]{makeMultiGrid}}) with 2 variables:
+#' "probOfRain" and "amountOfRain". 
 #'
 #' @seealso 
-#' bernouilliGamma.loss_function a custom loss function for Bernouilli-Gamma distributions
+#' bernouilliGammaLoss a custom loss function for Bernouilli-Gamma distributions
 #' @details This function uses \code{tensorflow} internally. Please if not, install tensorflow (>= v.)
 #' downscaleTrain.keras for training a downscaling deep model with keras
 #' downscalePredict.keras for predicting with a keras model
@@ -38,7 +39,7 @@
 #' @import tensorflow
 #' @importFrom stats rgamma runif
 #' @export
-bernouilliGamma.statistics <- function(p,alpha,beta,
+bernouilliGammaStatistics <- function(p,alpha,beta,
                                        simulate = FALSE,
                                        bias = NULL) {
   p <- redim(p, drop = TRUE) %>% redim(member = TRUE)

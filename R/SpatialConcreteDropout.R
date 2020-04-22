@@ -22,7 +22,6 @@
 #' to the R software, developed in 
 #' https://github.com/yaringal/ConcreteDropout/blob/master/spatial-concrete-dropout-keras.ipynb
 #' @author J. Bano-Medina
-#' @export
 # R6 wrapper class, a subclass of KerasWrapper
 spatialConcreteDropout <- R6::R6Class("spatialConcreteDropout",
                                

@@ -21,7 +21,6 @@
 #' RStudio AI Blog: You sure? A Bayesian approach to obtaining uncertainty estimates from neural networks. 
 #' Retrieved from https://blogs.rstudio.com/tensorflow/posts/2018-11-12-uncertainty_estimates_dropout/
 #' @author J. Bano-Medina
-#' @export
 # R6 wrapper class, a subclass of KerasWrapper
 concreteDropout <- R6::R6Class("concreteDropout",
                                

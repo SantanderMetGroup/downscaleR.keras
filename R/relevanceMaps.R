@@ -26,7 +26,7 @@
 #' @param C4R.template A climate4R grid that serves as template for the returned prediction object.
 #' @param outputCoords A matrix. The coordinates of the predictand(s) gridpoints for whom the
 #' prediction difference analysis is desired. Longitudes in the first column and latitudes in the second column.
-#' @param bernouilliGamma A logical value. Indicates whether the \code{\link[downscaleR.keras]{bernouilliGamma.loss_function}}
+#' @param bernouilliGamma A logical value. Indicates whether the \code{\link[downscaleR.keras]{bernouilliGammaLoss}}
 #' was used to train the model in \code{\link[downscaleR.keras]{downscaleTrain.keras}}. Default is FALSE.
 #' @param parch Possible values are c("all","variable","channel"). Indicates whether we want to marginalize the influence of
 #' a certain gridpoint as a whole ("all"), to isolate the influence per variable 
@@ -76,7 +76,7 @@ relevanceMaps <- function(x,obj,
   if (isTRUE(bernouilliGamma)) {
     pKnown <- lapply(c("pr1","pr2","pr3"),FUN = function(z) interpGrid(subsetGrid(pKnown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
       makeMultiGrid() 
-    pKnown <- bernouilliGamma.statistics(p = subsetGrid(pKnown,var = "pr1"),
+    pKnown <- bernouilliGammaStatistics(p = subsetGrid(pKnown,var = "pr1"),
                                          alpha = subsetGrid(pKnown,var = "pr2"),
                                          beta = subsetGrid(pKnown,var = "pr3"),
                                          simulate = FALSE)
@@ -112,7 +112,7 @@ relevanceMaps <- function(x,obj,
         if (isTRUE(bernouilliGamma)) {
           pUnknown <- lapply(c("pr1","pr2","pr3"),FUN = function(z) interpGrid(subsetGrid(pUnknown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
             makeMultiGrid() 
-          pUnknown <- bernouilliGamma.statistics(p = subsetGrid(pUnknown,var = "pr1"),
+          pUnknown <- bernouilliGammaStatistics(p = subsetGrid(pUnknown,var = "pr1"),
                                                  alpha = subsetGrid(pUnknown,var = "pr2"),
                                                  beta = subsetGrid(pUnknown,var = "pr3"),
                                                  simulate = FALSE)

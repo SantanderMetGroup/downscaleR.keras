@@ -1,4 +1,4 @@
-##     bernouilliGamma.loss_function.R Custom loss function for BernouilliGamma distributions.
+##     bernouilliGammaLoss.R Custom loss function for BernouilliGamma distributions.
 ##
 ##     Copyright (C) 2017 Santander Meteorology Group (http://www.meteo.unican.es)
 ##
@@ -19,8 +19,12 @@
 #' @description This loss function optimizes the negative log-likelihood of a Bernouill-Gamma distribution. It is a custom
 #' loss function defined according to keras functions.
 #' @param last.connection A string with values "conv" o "dense" depending on the type of the net's last connection. DEFAULT is NULL.
+#' @details Note that infering a conditional Bernouilli-Gamma distribution means to estimate their associated parameters:
+#' probability ($p$), shape ($\alpha$) and scale ($\beta$) factor. To avoid computational instabilities
+#' we actually estimate $log \alpha$ and $log \beta$. Therefore, make sure that your output layers are designed according
+#' to this property of the distribution.
 #' @seealso 
-#' bernouilliGamma.statistics for computing the expectance or simulate from the discrete continuous distribution
+#' bernouilliGammaStatistics for computing the expectance or simulate from the discrete continuous distribution
 #' downscaleTrain.keras for training a downscaling deep model with keras
 #' downscalePredict.keras for predicting with a keras model
 #' prepareNewData.keras for predictor preparation with new (test) data
@@ -29,7 +33,7 @@
 #' @author J. Bano-Medina
 #' @import tensorflow
 #' @export
-bernouilliGamma.loss_function <- function(last.connection = NULL) {
+bernouilliGammaLoss <- function(last.connection = NULL) {
   if (last.connection == "dense") {
     custom_metric("custom_loss", function(true, pred){
       K <- backend()

@@ -29,7 +29,7 @@ relevanceMaps(
 \item{outputCoords}{A matrix. The coordinates of the predictand(s) gridpoints for whom the
 prediction difference analysis is desired. Longitudes in the first column and latitudes in the second column.}
 
-\item{bernouilliGamma}{A logical value. Indicates whether the \code{\link[downscaleR.keras]{bernouilliGamma.loss_function}}
+\item{bernouilliGamma}{A logical value. Indicates whether the \code{\link[downscaleR.keras]{bernouilliGammaLoss}}
 was used to train the model in \code{\link[downscaleR.keras]{downscaleTrain.keras}}. Default is FALSE.}
 
 \item{parch}{Possible values are c("all","variable","channel"). Indicates whether we want to marginalize the influence of
