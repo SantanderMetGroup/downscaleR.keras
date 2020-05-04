@@ -40,8 +40,8 @@
 #' @importFrom stats rgamma runif
 #' @export
 bernouilliGammaStatistics <- function(p,alpha,beta,
-                                       simulate = FALSE,
-                                       bias = NULL) {
+                                      simulate = FALSE,
+                                      bias = NULL) {
   p <- redim(p, drop = TRUE) %>% redim(member = TRUE)
   alpha <- redim(alpha, drop = TRUE) %>% redim(member = TRUE)
   beta <- redim(beta, drop = TRUE) %>% redim(member = TRUE)
