@@ -74,13 +74,12 @@ relevanceMaps <- function(x,obj,
   
   pKnown <- prepareNewData.keras(x,obj) %>% downscalePredict.keras(model,clear.session = TRUE,C4R.template = C4R.template)  
   if (isTRUE(bernouilliGamma)) {
-    pKnown <- lapply(c("pr1","pr2","pr3"),FUN = function(z) interpGrid(subsetGrid(pKnown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
+    pKnown <- lapply(c("p","log_alpha","log_beta"),FUN = function(z) interpGrid(subsetGrid(pKnown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
       makeMultiGrid() 
-    pKnown <- bernouilliGammaStatistics(p = subsetGrid(pKnown,var = "pr1"),
-                                         alpha = subsetGrid(pKnown,var = "pr2"),
-                                         beta = subsetGrid(pKnown,var = "pr3"),
-                                         simulate = FALSE)
-    pKnown <- gridArithmetics(subsetGrid(pKnown,var = "probOfRain"),subsetGrid(pKnown,var = "amountOfRain"))
+    rainfall <- computeRainfall(log_alpha = subsetGrid(pKnown,var = "log_alpha"),
+                                log_beta  = subsetGrid(pKnown,var = "log_beta"))
+    pKnown <- gridArithmetics(subsetGrid(pKnown,var = "p"),rainfall)
+    rainfall <- NULL
   } else {
     pKnown <- interpGrid(pKnown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
   }
@@ -110,14 +109,13 @@ relevanceMaps <- function(x,obj,
         xw <- NULL
         gc()
         if (isTRUE(bernouilliGamma)) {
-          pUnknown <- lapply(c("pr1","pr2","pr3"),FUN = function(z) interpGrid(subsetGrid(pUnknown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
+          pUnknown <- lapply(c("p","log_alpha","log_beta"),FUN = function(z) interpGrid(subsetGrid(pUnknown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
             makeMultiGrid() 
-          pUnknown <- bernouilliGammaStatistics(p = subsetGrid(pUnknown,var = "pr1"),
-                                                 alpha = subsetGrid(pUnknown,var = "pr2"),
-                                                 beta = subsetGrid(pUnknown,var = "pr3"),
-                                                 simulate = FALSE)
-          pUnknown <- gridArithmetics(subsetGrid(pUnknown,var = "probOfRain"),subsetGrid(pUnknown,var = "amountOfRain"))
-        } else {
+          rainfall <- computeRainfall(log_alpha = subsetGrid(pUnknown,var = "log_alpha"),
+                                      log_beta  = subsetGrid(pUnknown,var = "log_beta"))
+          pUnknown <- gridArithmetics(subsetGrid(pUnknown,var = "p"),rainfall)
+          rainfall <- NULL       
+          } else {
           pUnknown <- interpGrid(pUnknown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
         }   
         pUnknown <- aggregateGrid(pUnknown,aggr.mem = list(FUN = "mean", na.rm = TRUE)) %>%

@@ -24,6 +24,8 @@
 #' In particular, refers to whether we want to use the function \code{\link[keras]{k_clear_session}} after training.
 #' If FALSE, model is returned. If TRUE, then k_clear_session() is applied and no model is returned.
 #' Default to FALSE.
+#' @param loss Default to NULL. Otherwise a string indicating the loss function used to train the model. This is only
+#' relevant where we have used the 2 custom loss functions of this library: "gaussianLoss" or "bernouilliGammaLoss"
 #' 
 #' @details This function relies on keras, which is a high-level neural networks API capable of running on top of tensorflow, CNTK or theano.
 #' There are official \href{https://keras.rstudio.com/}{keras tutorials} regarding how to build deep learning models. We suggest the user, especially the beginners,
@@ -78,7 +80,8 @@
 #' # Training the deep learning model
 #' model <- downscaleTrain.keras(xy.T,
 #'                               model = model,
-#'                               compile.args = list("loss" = "mse", "optimizer" = optimizer_adam(lr = 0.01)),
+#'                               compile.args = list("loss" = "mse", 
+#'                               "optimizer" = optimizer_adam(lr = 0.01)),
 #'                               fit.args = list("epochs" = 30, "batch_size" = 100))
 #' # Predicting on the test set...
 #' xy.t <- prepareNewData.keras(newdata = xt,data.structure = xy.T)
@@ -93,7 +96,8 @@
 downscalePredict.keras <- function(newdata,
                                    model,
                                    C4R.template,
-                                   clear.session = FALSE) {
+                                   clear.session = FALSE,
+                                   loss = NULL) {
   if (is.list(model)) model <- do.call("load_model_hdf5",model)
   
   x.global <- newdata$x.global
@@ -145,8 +149,15 @@ downscalePredict.keras <- function(newdata,
   pred$Dates <- attr(newdata,"dates")
   n.vars <- getShape(redim(pred,var = TRUE),"var")
   if (n.vars > 1) {
-    pred$Variable$varName <- paste0(pred$Variable$varName,1:n.vars)
+    if (loss == "gaussianLoss") {
+      pred$Variable$varName <- c("mean","log_var")
+    } else if (loss == "bernouilliGammaLoss") {
+      pred$Variable$varName <- c("p","log_alpha","log_beta")
+    } else {
+      pred$Variable$varName <- paste0(pred$Variable$varName,1:n.vars)
+    }
     pred$Dates <- rep(list(pred$Dates),n.vars)
+    
   }
   return(pred)
 }

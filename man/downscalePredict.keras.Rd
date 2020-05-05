@@ -4,7 +4,13 @@
 \alias{downscalePredict.keras}
 \title{Downscale climate data for a a previous defined deep learning keras model.}
 \usage{
-downscalePredict.keras(newdata, model, C4R.template, clear.session = FALSE)
+downscalePredict.keras(
+  newdata,
+  model,
+  C4R.template,
+  clear.session = FALSE,
+  loss = NULL
+)
 }
 \arguments{
 \item{newdata}{The grid data. It should be an object as returned by  \code{\link[downscaleR.keras]{prepareNewData.keras}}.}
@@ -18,6 +24,9 @@ or a list of arguments passed to \code{\link[keras]{load_model_hdf5}}.}
 In particular, refers to whether we want to use the function \code{\link[keras]{k_clear_session}} after training.
 If FALSE, model is returned. If TRUE, then k_clear_session() is applied and no model is returned.
 Default to FALSE.}
+
+\item{loss}{Default to NULL. Otherwise a string indicating the loss function used to train the model. This is only
+relevant where we have used the 2 custom loss functions of this library: "gaussianLoss" or "bernouilliGammaLoss"}
 }
 \value{
 A regular/irregular grid object.
@@ -69,7 +78,8 @@ model
 # Training the deep learning model
 model <- downscaleTrain.keras(xy.T,
                               model = model,
-                              compile.args = list("loss" = "mse", "optimizer" = optimizer_adam(lr = 0.01)),
+                              compile.args = list("loss" = "mse", 
+                              "optimizer" = optimizer_adam(lr = 0.01)),
                               fit.args = list("epochs" = 30, "batch_size" = 100))
 # Predicting on the test set...
 xy.t <- prepareNewData.keras(newdata = xt,data.structure = xy.T)

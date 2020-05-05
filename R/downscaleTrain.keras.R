@@ -82,20 +82,23 @@
 #' 
 #' # Training the deep learning model
 #' model <- downscaleTrain.keras(data,
-#'                               model = model,
-#'                               compile.args = list("loss" = "mse", "optimizer" = optimizer_adam(lr = 0.01)),
-#'                               fit.args = list("epochs" = 30, "batch_size" = 100))
+#'                model = model,
+#'                compile.args = list("loss" = "mse", 
+#'                "optimizer" = optimizer_adam(lr = 0.01)),
+#'                fit.args = list("epochs" = 30, "batch_size" = 100))
 #' 
 #' # Training a deep learning model 
 #' # (saving the model using callbacks according to an early-stopping criteria)
 #' downscaleTrain.keras(data,
-#'                      model = model,
-#'                      compile.args = list("loss" = "mse", "optimizer" = optimizer_adam(lr = 0.01)),
-#'                      fit.args = list("epochs" = 50, "batch_size" = 100, "validation_split" = 0.1,
-#'                                      "callbacks" = list(callback_early_stopping(patience = 10),
-#'                                                         callback_model_checkpoint(filepath=paste0(getwd(),"/model.h5"),
-#'                                                                                   monitor='val_loss', save_best_only=TRUE))),
-#'                      clear.session = TRUE)
+#'            model = model,
+#'            compile.args = list("loss" = "mse", 
+#'            "optimizer" = optimizer_adam(lr = 0.01)),
+#'            fit.args = list("epochs" = 50, "batch_size" = 100, 
+#'                            "validation_split" = 0.1,
+#'            "callbacks" = list(callback_early_stopping(patience = 10),
+#'                 callback_model_checkpoint(filepath=paste0(getwd(),"/model.h5"),
+#'                 monitor='val_loss', save_best_only=TRUE))),
+#'            clear.session = TRUE)
 #' }
 downscaleTrain.keras <- function(obj,
                                  model,
