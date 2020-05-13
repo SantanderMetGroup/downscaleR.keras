@@ -212,7 +212,7 @@ downscaleCV.keras <- function(x, y, model,MC = NULL,
       downscalePredict.keras(xt, modelCV, C4R.template = yT, loss = loss)
     } else {  
       lapply(1:MC,FUN = function(z) downscalePredict.keras(xt, modelCV, C4R.template = yT, loss = loss)) %>%
-        bindGrid(dimensions = "member")
+        bindGrid(dimension = "member")
     }
     if (isTRUE(binarySerie)) {
       xT <- prepareNewData.keras(newdata = xT, data.structure = xy)
