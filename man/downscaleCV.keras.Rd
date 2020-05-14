@@ -17,7 +17,9 @@ downscaleCV.keras(
   fit.args = NULL,
   transferLearning = FALSE,
   loss = NULL,
-  binarySerie = FALSE
+  binarySerie = FALSE,
+  condition = NULL,
+  threshold = NULL
 )
 }
 \arguments{
@@ -69,7 +71,14 @@ relevant where we have used the 2 custom loss functions of this library: "gaussi
 \item{binarySerie}{A logic value, default to FALSE. Indicate whether to conver the predicted probabilities of rain
 to a binary value by adjusting the frequency of rainy days to that observed in the train period. Note that this is
 only valid when our aim is to downscale precipitation and we set the "loss" parameter to the custom function
-"bernouilliGammaLoss".}
+"bernouilliGammaLoss". We need to define what we consider as rainy day, see the parameters \code{condition} and \code{threshold} to
+set these values.}
+
+\item{condition}{Inequality operator to be applied considering the given threshold.
+\code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
+\code{"LT"} = lower than, \code{"LE"} = lower or equal than. Values that accomplish the condition turn to 1 whereas the others turn to 0.}
+
+\item{threshold}{An integer. Threshold used as reference for the condition. Default is NULL.}
 }
 \value{
 The reconstructed downscaled temporal serie.
