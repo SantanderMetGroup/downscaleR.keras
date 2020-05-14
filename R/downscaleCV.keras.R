@@ -54,7 +54,12 @@
 #' @param binarySerie A logic value, default to FALSE. Indicate whether to conver the predicted probabilities of rain
 #' to a binary value by adjusting the frequency of rainy days to that observed in the train period. Note that this is
 #' only valid when our aim is to downscale precipitation and we set the "loss" parameter to the custom function
-#' "bernouilliGammaLoss".
+#' "bernouilliGammaLoss". We need to define what we consider as rainy day, see the parameters \code{condition} and \code{threshold} to
+#' set these values.
+#' @param condition Inequality operator to be applied considering the given threshold.
+#' \code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
+#' \code{"LT"} = lower than, \code{"LE"} = lower or equal than. Values that accomplish the condition turn to 1 whereas the others turn to 0.
+#' @param threshold An integer. Threshold used as reference for the condition. Default is NULL. 
 #' @details The function relies on \code{\link[downscaleR.keras]{prepareData.keras}}, \code{\link[downscaleR.keras]{prepareNewData.keras}}, \code{\link[downscaleR.keras]{downscaleTrain.keras}}, and \code{\link[downscaleR.keras]{downscalePredict.keras}}. 
 #' For more information please visit these functions. It is envisaged to allow for a flexible fine-tuning of the cross-validation scheme. It uses internally the \pkg{transformeR} 
 #' helper \code{\link[transformeR]{dataSplit}} for flexible data folding. 
@@ -219,7 +224,7 @@ downscaleCV.keras <- function(x, y, model,MC = NULL,
       aux2 <- downscalePredict.keras(xT, modelCV, C4R.template = yT, loss = loss) %>%
         subsetGrid(var = "p")
       aux1 <- subsetGrid(out,var = "p")
-      bin <- convert2bin(aux1,ref.obs = yT,ref.pred = aux2) 
+      bin <- binaryGrid(aux1, ref.obs = binaryGrid(yT,condition = condition,threshold = threshold), ref.pred = aux2) 
       bin$Variable$varName <- "bin"
       out <- makeMultiGrid(subsetGrid(out,var = "p"),
                            subsetGrid(out,var = "log_alpha"),
