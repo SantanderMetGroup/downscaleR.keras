@@ -164,7 +164,9 @@ downscaleCV.keras <- function(x, y, model,MC = NULL,
                         fit.args = NULL,
                         transferLearning = FALSE,
                         loss = NULL, 
-                        binarySerie = FALSE) {
+                        binarySerie = FALSE,
+                        condition = NULL,
+                        threshold = NULL) {
   
   x <- getTemporalIntersection(x,y,which.return = "obs")
   y <- getTemporalIntersection(x,y,which.return = "prd")
