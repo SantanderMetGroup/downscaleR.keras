@@ -37,6 +37,8 @@
 #' at every step.
 #' @param l A numeric value. Defines the domain ((2l+1)x(2l+1)) used to infer the conditional multivariate gaussian distribution
 #' @param num_samples A numeric value. How many times do we sample from the multivariate gaussian distribution?
+#' @param loss Default to NULL. Otherwise a string indicating the loss function used to train the model. This is only
+#' relevant where we have used the 2 custom loss functions of this library: "gaussianLoss" or "bernouilliGammaLoss"
 #' @details This function relies on keras, which is a high-level neural networks API capable of running on top of tensorflow, CNTK or theano.
 #' There are official \href{https://keras.rstudio.com/}{keras tutorials} regarding how to build deep learning models. We suggest the user, especially the beginners,
 #' to consult these tutorials before using the downscaleR.keras package. Moreover, we encourage the reader to consult 
@@ -59,7 +61,7 @@ relevanceMaps <- function(x,obj,
                           outputCoords,
                           bernouilliGamma = FALSE,
                           parch = c("channel","variable","all"),
-                          k = 0, l = 2, num_samples = 10) {
+                          k = 0, l = 2, num_samples = 10,loss = NULL) {
   
   ntime <- getShape(x,"time")
   nl <- getShape(x,"lat")
@@ -72,14 +74,16 @@ relevanceMaps <- function(x,obj,
     n <- lapply(vars, FUN = function(z) which(attr(x$Variable, "description") == z))
   }
   
-  pKnown <- prepareNewData.keras(x,obj) %>% downscalePredict.keras(model,clear.session = TRUE,C4R.template = C4R.template)  
-  if (isTRUE(bernouilliGamma)) {
+  pKnown <- prepareNewData.keras(x,obj) %>% downscalePredict.keras(model,clear.session = TRUE,C4R.template = C4R.template, loss = loss)  
+  if (loss == "bernouilliGammaLoss") {
     pKnown <- lapply(c("p","log_alpha","log_beta"),FUN = function(z) interpGrid(subsetGrid(pKnown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
       makeMultiGrid() 
     rainfall <- computeRainfall(log_alpha = subsetGrid(pKnown,var = "log_alpha"),
                                 log_beta  = subsetGrid(pKnown,var = "log_beta"))
     pKnown <- gridArithmetics(subsetGrid(pKnown,var = "p"),rainfall)
     rainfall <- NULL
+  } else if (loss == "gaussianLoss"){
+    pKnown <- subsetGrid(pKnown, var = "mean") %>% interpGrid(new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
   } else {
     pKnown <- interpGrid(pKnown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
   }
@@ -105,19 +109,21 @@ relevanceMaps <- function(x,obj,
         xk <- NULL; xl <- NULL
         gc()
         pUnknown <- prepareNewData.keras(xw,obj) %>%  
-          downscalePredict.keras(model,C4R.template,clear.session = TRUE) 
+          downscalePredict.keras(model,C4R.template,clear.session = TRUE, loss = loss) 
         xw <- NULL
         gc()
-        if (isTRUE(bernouilliGamma)) {
+        if (loss == "bernouilliGammaLoss") {
           pUnknown <- lapply(c("p","log_alpha","log_beta"),FUN = function(z) interpGrid(subsetGrid(pUnknown,var = z),new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))) %>% 
             makeMultiGrid() 
           rainfall <- computeRainfall(log_alpha = subsetGrid(pUnknown,var = "log_alpha"),
                                       log_beta  = subsetGrid(pUnknown,var = "log_beta"))
           pUnknown <- gridArithmetics(subsetGrid(pUnknown,var = "p"),rainfall)
           rainfall <- NULL       
-          } else {
+        } else if (loss == "gaussianLoss"){
+          pUnknown <- subsetGrid(pUnknown, var = "mean") %>% interpGrid(new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
+        } else {
           pUnknown <- interpGrid(pUnknown,new.coordinates = list(x = outputCoords[,1],y = outputCoords[,2]))
-        }   
+        } 
         pUnknown <- aggregateGrid(pUnknown,aggr.mem = list(FUN = "mean", na.rm = TRUE)) %>%
           redim(drop = TRUE)
         infl <- gridArithmetics(pUnknown,pKnown,operator = "-")
