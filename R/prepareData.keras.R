@@ -43,7 +43,8 @@
 #' @export
 #'  
 #' @author J. Baño-Medina
-#' @examples
+#' @examples \donttest{
+#' require(climate4R.datasets) 
 #' # Loading data
 #' require(transformeR)
 #' data("VALUE_Iberia_tas")
@@ -59,6 +60,7 @@
 #'                           channels = "last")
 #' # We can visualize the outputield not imported f
 #' str(data)
+#' }
 prepareData.keras <- function(x,y,
                               first.connection = c("dense","conv"),
                               channels = c("first","last"),

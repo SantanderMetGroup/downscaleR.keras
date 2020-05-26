@@ -13,6 +13,7 @@ Imports:
     magrittr,
 Suggests:
     loadeR,
+    climate4R.datasets,
     downscaleR,
     visualizeR,
     knitr,

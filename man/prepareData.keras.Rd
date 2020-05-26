@@ -37,6 +37,8 @@ Configuration of data for flexible downscaling keras experiment definition
 Remove days containing NA in at least one predictand site.
 }
 \examples{
+\donttest{
+require(climate4R.datasets) 
 # Loading data
 require(transformeR)
 data("VALUE_Iberia_tas")
@@ -52,6 +54,7 @@ data <- prepareData.keras(x = x, y = y,
                           channels = "last")
 # We can visualize the outputield not imported f
 str(data)
+}
 }
 \seealso{
 downscaleTrain.keras for training a downscaling deep model with keras

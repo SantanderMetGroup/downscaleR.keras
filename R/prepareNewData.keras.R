@@ -33,8 +33,9 @@
 #' @family downscaling.keras.helpers
 #' @importFrom transformeR getVarNames subsetGrid redim getShape getCoordinates grid2PCs getRefDates array3Dto2Dmat grid2PCs
 #' @importFrom magrittr %>% extract2 
-#' @examples
+#' @examples \donttest{
 #' # Loading data
+#' require(climate4R.datasets)
 #' require(transformeR)
 #' data("VALUE_Iberia_tas")
 #' y <- VALUE_Iberia_tas
@@ -55,6 +56,7 @@
 #' # Preparing the predictors for prediction...
 #' xy.t <- prepareNewData.keras(newdata = xt,data.structure = xy.T)
 #' str(xy.t)
+#' }
 
 prepareNewData.keras <- function(newdata,data.structure) {
   first.connection <- attr(data.structure,"first.connection")

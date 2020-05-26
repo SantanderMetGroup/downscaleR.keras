@@ -83,8 +83,9 @@
 #' @importFrom transformeR dataSplit scaleGrid binaryGrid makeMultiGrid filterNA getYearsAsINDEX intersectGrid convert2bin
 #' @author J. Bano-Medina
 #' @export
-#' @examples 
+#' @examples \donttest{
 #' # Loading data
+#' require(climate4R.datasets)
 #' require(transformeR)
 #' data("VALUE_Iberia_tas")
 #' y <- VALUE_Iberia_tas
@@ -156,6 +157,7 @@
 #'            fit.args = list(batch_size = 100, epochs = 100, validation_split = 0.1),
 #'            loss = "bernouilliGammaLoss",
 #'            binarySerie = TRUE)
+#' }            
 downscaleCV.keras <- function(x, y, model,MC = NULL,
                         sampling.strategy = "kfold.chronological", folds = 4, 
                         scaleGrid.args = NULL,

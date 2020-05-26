@@ -35,6 +35,8 @@ that optimized the loss function \code{\link[downscaleR.keras]{bernouilliGammaLo
 This function uses \code{tensorflow} internally. Please if not, install tensorflow (>= v.)
 }
 \examples{
+\donttest{
+require(climate4R.datasets)
 require(transformeR)
 data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 x <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
@@ -72,6 +74,7 @@ pred_amo <- computeRainfall(log_alpha = subsetGrid(pred,var = "log_alpha"),
                             log_beta = subsetGrid(pred,var = "log_beta"),
                             simulate = TRUE,
                             bias = 0.99)
+}                             
 }
 \seealso{
 bernouilliGammaLoss a custom loss function for Bernouilli-Gamma distributions

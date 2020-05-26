@@ -40,7 +40,9 @@ There are official \href{https://keras.rstudio.com/}{keras tutorials} regarding 
 to consult these tutorials before using downscalePredict.keras.
 }
 \examples{
+\donttest{ 
 # Loading data
+require(climate4R.datasets)
 require(transformeR)
 require(magrittr)
 require(keras)
@@ -91,6 +93,7 @@ pred <- downscalePredict.keras(newdata = xy.t,
 # as it preserves the climate4R template.
 require(visualizeR)
 temporalPlot(yt,pred)
+}
 }
 \seealso{
 downscaleTrain.keras for training a downscaling deep model with keras

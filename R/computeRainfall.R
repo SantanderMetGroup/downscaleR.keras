@@ -38,7 +38,8 @@
 #' @import tensorflow
 #' @importFrom stats rgamma runif
 #' @export
-#' @examples 
+#' @examples \donttest{
+#' require(climate4R.datasets)
 #' require(transformeR)
 #' data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")
 #' x <- makeMultiGrid(NCEP_Iberia_hus850, NCEP_Iberia_psl, NCEP_Iberia_ta850)
@@ -76,6 +77,7 @@
 #'                             log_beta = subsetGrid(pred,var = "log_beta"),
 #'                             simulate = TRUE,
 #'                             bias = 0.99)
+#' }                             
 computeRainfall <- function(log_alpha=NULL,
                             log_beta=NULL,
                             simulate = FALSE,

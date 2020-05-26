@@ -41,8 +41,9 @@
 #' @import keras
 #' @importFrom transformeR array3Dto2Dmat mat2Dto3Darray isRegular bindGrid redim makeMultiGrid
 #' @export
-#' @examples 
+#' @examples \donttest{ 
 #' # Loading data
+#' require(climate4R.datasets)
 #' require(transformeR)
 #' require(magrittr)
 #' require(keras)
@@ -93,6 +94,7 @@
 #' # as it preserves the climate4R template.
 #' require(visualizeR)
 #' temporalPlot(yt,pred)
+#' }
 downscalePredict.keras <- function(newdata,
                                    model,
                                    C4R.template,

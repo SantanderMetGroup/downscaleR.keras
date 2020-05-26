@@ -108,7 +108,9 @@ According to the concept of cross-validation, a particular year should not appea
  will raise an error, as 1989 appears in more than one fold.
 }
 \examples{
+\donttest{
 # Loading data
+require(climate4R.datasets)
 require(transformeR)
 data("VALUE_Iberia_tas")
 y <- VALUE_Iberia_tas
@@ -180,6 +182,7 @@ pred <- downscaleCV.keras(x, y, model,
            fit.args = list(batch_size = 100, epochs = 100, validation_split = 0.1),
            loss = "bernouilliGammaLoss",
            binarySerie = TRUE)
+}            
 }
 \author{
 J. Bano-Medina

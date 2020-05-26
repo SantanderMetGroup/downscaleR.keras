@@ -14,7 +14,8 @@ relevanceMaps(
   parch = c("channel", "variable", "all"),
   k = 0,
   l = 2,
-  num_samples = 10
+  num_samples = 10,
+  loss = NULL
 )
 }
 \arguments{
@@ -44,6 +45,9 @@ at every step.}
 \item{l}{A numeric value. Defines the domain ((2l+1)x(2l+1)) used to infer the conditional multivariate gaussian distribution}
 
 \item{num_samples}{A numeric value. How many times do we sample from the multivariate gaussian distribution?}
+
+\item{loss}{Default to NULL. Otherwise a string indicating the loss function used to train the model. This is only
+relevant where we have used the 2 custom loss functions of this library: "gaussianLoss" or "bernouilliGammaLoss"}
 }
 \value{
 A climate 4R object containing the relevance maps as members. The attribute attr(out,"memberCoords") is added to the climate4R output object

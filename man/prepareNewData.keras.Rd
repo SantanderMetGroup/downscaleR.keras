@@ -18,7 +18,9 @@ A named list with the components required by downscalePredict.keras in order to 
 Prepare the prediction data according to the definition of the keras deep model's experiment
 }
 \examples{
+\donttest{
 # Loading data
+require(climate4R.datasets)
 require(transformeR)
 data("VALUE_Iberia_tas")
 y <- VALUE_Iberia_tas
@@ -39,6 +41,7 @@ xy.T <- prepareData.keras(x = xT, y = yT,
 # Preparing the predictors for prediction...
 xy.t <- prepareNewData.keras(newdata = xt,data.structure = xy.T)
 str(xy.t)
+}
 }
 \seealso{
 downscaleTrain.keras for training a downscaling deep model with keras
