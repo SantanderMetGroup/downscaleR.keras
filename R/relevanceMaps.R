@@ -26,8 +26,6 @@
 #' @param C4R.template A climate4R grid that serves as template for the returned prediction object.
 #' @param outputCoords A matrix. The coordinates of the predictand(s) gridpoints for whom the
 #' prediction difference analysis is desired. Longitudes in the first column and latitudes in the second column.
-#' @param bernouilliGamma A logical value. Indicates whether the \code{\link[downscaleR.keras]{bernouilliGammaLoss}}
-#' was used to train the model in \code{\link[downscaleR.keras]{downscaleTrain.keras}}. Default is FALSE.
 #' @param parch Possible values are c("all","variable","channel"). Indicates whether we want to marginalize the influence of
 #' a certain gridpoint as a whole ("all"), to isolate the influence per variable 
 #' ("variable", i.e., for example to isolate the influence of the specific humidity at all levels: hus500,hus700,...) 
@@ -59,7 +57,6 @@ relevanceMaps <- function(x,obj,
                           C4R.template,
                           model,
                           outputCoords,
-                          bernouilliGamma = FALSE,
                           parch = c("channel","variable","all"),
                           k = 0, l = 2, num_samples = 10,loss = NULL) {
   
