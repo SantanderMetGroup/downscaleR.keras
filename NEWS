@@ -4,8 +4,7 @@
  * NEWS
  * minor changes in prepareNewData.keras and relevanceMaps
  
-## v1.0.0 (on-going) 
- * Concrete Dropout layers
+## v1.0.0
  * gaussianLoss(), which minimizes the negative log-likelihood of a Gaussian distribution.
  * downscalePredictHidden.keras function to obtain the output of the hidden layers and the kernels (in conv layers)
  * Function name changed: bernouilliGamma.loss_function --> bernouilliGammaLoss
