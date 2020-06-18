@@ -20,7 +20,7 @@ Suggests:
     rmarkdown
 Type: Package
 Title: A climate4R package for statistical downscaling <http://meteo.unican.es/climate4r>
-Version: 0.0.0
+Version: 1.0.0
 Date: 2020-06-18
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
