@@ -4,12 +4,7 @@
 \alias{computeRainfall}
 \title{Compute the amount of precipitation given the parameters of a Gamma distribution.}
 \usage{
-computeRainfall(
-  log_alpha = NULL,
-  log_beta = NULL,
-  simulate = FALSE,
-  bias = NULL
-)
+computeRainfall(log_alpha, log_beta, simulate = FALSE, bias = NULL)
 }
 \arguments{
 \item{log_alpha}{A grid. The log of the shape parameter ("log_alpha") as returned by downscalePredict.keras when we use the bernouilliGamma loss function.}
@@ -30,9 +25,6 @@ Compute the amount of precipitation given the parameters of a Gamma distribution
 as returned by \code{\link[downscaleR.keras]{downscalePredict.keras}} on a trained model 
 (see \code{\link[downscaleR.keras]{downscaleTrain.keras}})
 that optimized the loss function \code{\link[downscaleR.keras]{bernouilliGammaLoss}}.
-}
-\details{
-This function uses \code{tensorflow} internally. Please if not, install tensorflow (>= v.)
 }
 \examples{
 \donttest{
@@ -64,7 +56,7 @@ pred <- downscaleCV.keras(x, y, model,
                                  optimizer = optimizer_adam()),
              fit.args = list(batch_size = 100, epochs = 10, validation_split = 0.1),
              loss = "bernouilliGammaLoss",
-             binarySerie = TRUE)
+             binarySerie = TRUE, condition = "GE", threshold = 1)
 # Deterministic
 pred_amo <- computeRainfall(log_alpha = subsetGrid(pred,var = "log_alpha"),
                             log_beta = subsetGrid(pred,var = "log_beta"),

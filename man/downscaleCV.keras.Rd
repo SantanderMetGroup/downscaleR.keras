@@ -15,7 +15,6 @@ downscaleCV.keras(
   prepareData.keras.args = NULL,
   compile.args = NULL,
   fit.args = NULL,
-  transferLearning = FALSE,
   loss = NULL,
   binarySerie = FALSE,
   condition = NULL,
@@ -61,9 +60,6 @@ more details about this parameter.}
 
 \item{fit.args}{A list of the arguments passed to the \code{\link[keras]{fit}} keras function, or equivalently to the
 \code{fit.args} parameter that appears in the \code{\link[downscaleR.keras]{downscaleTrain.keras}} function.}
-
-\item{transferLearning}{A logic value. Whether there should the transfer learning among folds? If TRUE
-then the parameters learned in fold 1 are used as the initial state on fold 2 and so on...}
 
 \item{loss}{Default to NULL. Otherwise a string indicating the loss function used to train the model. This is only
 relevant where we have used the 2 custom loss functions of this library: "gaussianLoss" or "bernouilliGammaLoss"}
@@ -181,7 +177,7 @@ pred <- downscaleCV.keras(x, y, model,
                                optimizer = optimizer_adam()),
            fit.args = list(batch_size = 100, epochs = 100, validation_split = 0.1),
            loss = "bernouilliGammaLoss",
-           binarySerie = TRUE)
+           binarySerie = TRUE,condition = "GE",threshold = 1)
 }            
 }
 \author{

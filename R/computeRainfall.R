@@ -31,7 +31,6 @@
 #' downscaleTrain.keras for training a downscaling deep model with keras
 #' downscalePredict.keras for predicting with a keras model
 #' prepareNewData.keras for predictor preparation with new (test) data
-#' @details This function uses \code{tensorflow} internally. Please if not, install tensorflow (>= v.)
 #' @return A climate4R grid with the deterministic or stochastic temporal serie 
 #' depending on whether the \code{simulate} parameter is FALSE or TRUE.
 #' @author J. Bano-Medina
@@ -67,7 +66,7 @@
 #'                                  optimizer = optimizer_adam()),
 #'              fit.args = list(batch_size = 100, epochs = 10, validation_split = 0.1),
 #'              loss = "bernouilliGammaLoss",
-#'              binarySerie = TRUE)
+#'              binarySerie = TRUE, condition = "GE", threshold = 1)
 #' # Deterministic
 #' pred_amo <- computeRainfall(log_alpha = subsetGrid(pred,var = "log_alpha"),
 #'                             log_beta = subsetGrid(pred,var = "log_beta"),
@@ -78,8 +77,8 @@
 #'                             simulate = TRUE,
 #'                             bias = 0.99)
 #' }                             
-computeRainfall <- function(log_alpha=NULL,
-                            log_beta=NULL,
+computeRainfall <- function(log_alpha,
+                            log_beta,
                             simulate = FALSE,
                             bias = NULL) {
   log_alpha %<>% redim(log_alpha, drop = TRUE) %>% redim(member = TRUE)
@@ -93,8 +92,8 @@ computeRainfall <- function(log_alpha=NULL,
     if (isTRUE(simulate)) {
       ntime <- getShape(log_alpha,"time")
       if (isRegular(log_alpha)) {
-      alpha_mat <- array3Dto2Dmat(exp(log_alpha$Data))
-      beta_mat <- array3Dto2Dmat(exp(log_beta$Data))
+        alpha_mat <- array3Dto2Dmat(exp(log_alpha$Data))
+        beta_mat <- array3Dto2Dmat(exp(log_beta$Data))
       } else {
         alpha_mat <- exp(log_alpha$Data)
         beta_mat <- exp(log_beta$Data)
