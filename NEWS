@@ -13,3 +13,4 @@
  * changed name function (and some functionalities): bernouilliGammaStatistics --> computeRainfall
  * internal changes on 'relevanceMaps' function
  * donttest in examples with require(climate4R.datasets)
+ * new function: computeTemperature.R

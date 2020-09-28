@@ -80,7 +80,7 @@ computeTemperature <- function(mean=NULL,
     ntime <- getShape(mean,"time")
     if (isRegular(mean)) {
       mean <- array3Dto2Dmat(mean$Data)
-      log_var <- array3Dto2Dmat(exp(log_var$Data) %>% sqrt())
+      sd <- array3Dto2Dmat(exp(log_var$Data) %>% sqrt())
     } else {
       mean <- mean$Data
       sd <- exp(log_var$Data) %>% sqrt()
