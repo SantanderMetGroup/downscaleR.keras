@@ -81,8 +81,10 @@ computeRainfall <- function(log_alpha,
                             log_beta,
                             simulate = FALSE,
                             bias = NULL) {
-  log_alpha %<>% redim(log_alpha, drop = TRUE) %>% redim(member = TRUE)
-  log_beta  %<>% redim(log_beta, drop = TRUE) %>% redim(member = TRUE)
+  loc <- FALSE
+  if (!isRegular(log_alpha)) loc <- TRUE
+  log_alpha %<>% redim(log_alpha, drop = TRUE, loc = loc) %>% redim(member = TRUE, loc = loc)
+  log_beta  %<>% redim(log_beta, drop = TRUE, loc = loc) %>% redim(member = TRUE, loc = loc)
   n.mem <- getShape(log_alpha,"member")
   out <- lapply(1:n.mem, FUN = function(z) {
     log_alpha %<>% subsetGrid(members = z)
