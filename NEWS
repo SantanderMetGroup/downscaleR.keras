@@ -14,3 +14,4 @@
  * internal changes on 'relevanceMaps' function
  * donttest in examples with require(climate4R.datasets)
  * new function: computeTemperature.R
+ * add time.frames in prepareData.keras and prepareNewData.keras for recurrent neural networks
