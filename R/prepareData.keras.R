@@ -26,6 +26,9 @@
 #' @param channels A string. Possible values are c("first","last") and indicates the dimension of the channels (i.e., climate variables)
 #' in the array. If "first" then dimensions = c("channel","latitude","longitude") for regular grids or c("channel","loc") for irregular grids.
 #' If "last" then dimensions = c("latitude","longitude","channel") for regular grids or c("loc","channel") for irregular grids.
+#' @param time.frames The number of time frames to build the recurrent neural network. If e.g., time.frame = 2, then the value 
+#' y(t) is a function of x(t) and x(t-1). The time frames stack in the input array prior to the input neurons or channels (in conv. layers). 
+#' See \code{\link[keras]{layer_simple_rnn}},\code{\link[keras]{layer_lstm}} or \code{\link[keras]{layer_conv_lstm_2d}}. 
 #' @return A named list with components \code{y} (the predictand), \code{x.global} (global predictors) and other attributes. See Examples.
 #' @details Remove days containing NA in at least one predictand site.
 #' @seealso 
@@ -63,13 +66,14 @@
 #' }
 prepareData.keras <- function(x,y,
                               first.connection = c("dense","conv"),
+                              last.connection = c("dense","conv"),
                               channels = c("first","last"),
-                              last.connection = c("dense","conv")) {
+                              time.frames = NULL) {
   x <- x %>% redim(drop = TRUE)
   if(any(getDim(x) == "member")) stop("No members allowed for training keras model")
   x <- x %>% redim(var = TRUE, member = FALSE)
   
-  # predictor 'x'
+  # predictor 'x' ---------------------------------------------------------------------------------
   if (first.connection == "dense") {
     if (isRegular(x)) {
       x.global <- lapply(getVarNames(x), FUN = function(z){
@@ -94,8 +98,17 @@ prepareData.keras <- function(x,y,
     if (channels == "first") x.global <- x$Data %>% aperm(c(2,1,3,4))
   }
   
+  # Adding time frame for recurrent layers
+  if (!is.null(time.frames)) {
+    xx.global <- array(dim = c(dim(x.global)[1]-time.frames+1,time.frames,dim(x.global)[-1]))
+    for (t in 1:dim(xx.global)[1]) {
+      if (first.connection == "dense") xx.global[t,,] <- x.global[t:(t+time.frames-1),]
+      if (first.connection == "conv") xx.global[t,,,,] <- x.global[t:(t+time.frames-1),,,] 
+    }
+    x.global <- xx.global
+  }
   
-  # predictand 'y'
+  # predictand 'y' ---------------------------------------------------------------------------------
   if (last.connection == "dense") {
     if (isRegular(y)) {
       y$Data <- array3Dto2Dmat(y$Data)
@@ -108,12 +121,21 @@ prepareData.keras <- function(x,y,
     if (anyNA(y$Data)) stop("NaNs were found in object: y")
   }
   
+  # Adding time frame for recurrent layers
+  if (!is.null(time.frames)) {
+    if (last.connection == "dense") y$Data <- y$Data[time.frames:dim(y$Data)[1],]
+    if (last.connection == "conv") y$Data <- y$Data[time.frames:dim(y$Data)[1],,]
+    y$Dates$start <- y$Dates$start[time.frames:dim(y$Data)[1]]
+    y$Dates$end <- y$Dates$end[time.frames:dim(y$Data)[1]]
+  }
+  
   predictor.list <- list("y" = y, "x.global" = x.global)
   if (first.connection == "dense") attr(predictor.list,"indices_noNA_x") <- ind.x
   if (last.connection  == "dense") attr(predictor.list,"indices_noNA_y") <- ind.y
   attr(predictor.list,"first.connection") <- first.connection
   attr(predictor.list,"last.connection") <- last.connection
   attr(predictor.list,"channels") <- channels
+  attr(predictor.list,"time.frames") <- time.frames
   
   return(predictor.list)
 }

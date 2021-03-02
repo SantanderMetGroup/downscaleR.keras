@@ -62,6 +62,8 @@ prepareNewData.keras <- function(newdata,data.structure) {
   first.connection <- attr(data.structure,"first.connection")
   last.connection  <- attr(data.structure,"last.connection") 
   channels <- attr(data.structure,"channels")
+  time.frames <- attr(data.structure,"time.frames")
+  
   if (first.connection == "dense") ind.x <- attr(data.structure,"indices_noNA_x")
   
   newdata <- newdata %>% redim(var = TRUE)
@@ -81,7 +83,7 @@ prepareNewData.keras <- function(newdata,data.structure) {
       if (channels == "first") x.global <- x.global %>% aperm(c(2,1,3))
       dim(x.global) <- c(dim(x.global)[1],prod(dim(x.global)[2:3]))
       ind.xx <- (!apply(x.global,MARGIN = 2,anyNA)) %>% which()
-      if (intersect(ind.x,ind.xx)) stop("New data contains NA in other gridpoints that those found in the training data")
+      if (!all(ind.xx %in% ind.x)) stop("New data contains NA in other gridpoints that those found in the training data")
       x.global <- x.global[,ind.x]
       
     } else if (first.connection == "conv") {
@@ -90,6 +92,16 @@ prepareNewData.keras <- function(newdata,data.structure) {
       
       if (channels == "last") x.global <- newdata$Data %>% aperm(c(2,3,4,1))
       if (channels == "first") x.global <- newdata$Data %>% aperm(c(2,1,3,4))
+    }
+    
+    # Adding time frame for recurrent layers
+    if (!is.null(time.frames)) {
+      xx.global <- array(dim = c(dim(x.global)[1]-time.frames+1,time.frames,dim(x.global)[-1]))
+      for (t in 1:dim(xx.global)[1]) {
+        if (first.connection == "dense") xx.global[t,,] <- x.global[t:(t+time.frames-1),]
+        if (first.connection == "conv") xx.global[t,,,,] <- x.global[t:(t+time.frames-1),,,] 
+      }
+      x.global <- xx.global
     }
     return(x.global)
   })
@@ -100,6 +112,13 @@ prepareNewData.keras <- function(newdata,data.structure) {
   attr(predictor.list,"first.connection") <- first.connection
   attr(predictor.list,"last.connection") <- last.connection
   attr(predictor.list,"channels") <- channels
-  attr(predictor.list,"dates") <- subsetGrid(newdata,var = getVarNames(newdata)[1])$Dates
+  dates <- subsetGrid(newdata,var = getVarNames(newdata)[1])$Dates
+  attr(predictor.list,"dates") <- if (!is.null(time.frames)) {
+    dates$start <- dates$start[time.frames:length(dates$start)]
+    dates$end <- dates$end[time.frames:length(dates$end)]
+    dates
+  } else {
+    dates
+  }
   return(predictor.list)
 }

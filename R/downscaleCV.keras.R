@@ -20,7 +20,7 @@
 #' The statistical downscaling methods currently implemented are: analogs, generalized linear models (GLM) and Neural Networks (NN). 
 #' @param x The input grid (admits both single and multigrid, see \code{\link[transformeR]{makeMultiGrid}}). It should be an object as returned by \pkg{loadeR}.
 #' @param y The observations dataset. It should be an object as returned by \pkg{loadeR}.
-#' @param MC A numeric value, default to NULL. The number of Monte-Carlo samples in case the model
+#' @param MC Currently on implementation. A numeric value, default to NULL. The number of Monte-Carlo samples in case the model
 #' is a bayesian neural network (note that any network containing dropout is equivalent 
 #' mathematically to a bayesian neural network). We refer the reader to the 
 #' custom \code{\link[downscaleR.keras]{concreteDropout}} and \code{\link[downscaleR.keras]{spatialConcreteDropout}} of how to learn 

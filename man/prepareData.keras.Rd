@@ -8,8 +8,9 @@ prepareData.keras(
   x,
   y,
   first.connection = c("dense", "conv"),
+  last.connection = c("dense", "conv"),
   channels = c("first", "last"),
-  last.connection = c("dense", "conv")
+  time.frames = NULL
 )
 }
 \arguments{
@@ -20,12 +21,16 @@ prepareData.keras(
 \item{first.connection}{A string. Possible values are c("dense","conv") depending on whether 
 the first connection (i.e., input layer to first hidden layer) is dense or convolutional.}
 
+\item{last.connection}{A string. Same as \code{first.connection} but for the last connection
+(i.e., last hidden layer to output layer).}
+
 \item{channels}{A string. Possible values are c("first","last") and indicates the dimension of the channels (i.e., climate variables)
 in the array. If "first" then dimensions = c("channel","latitude","longitude") for regular grids or c("channel","loc") for irregular grids.
 If "last" then dimensions = c("latitude","longitude","channel") for regular grids or c("loc","channel") for irregular grids.}
 
-\item{last.connection}{A string. Same as \code{first.connection} but for the last connection
-(i.e., last hidden layer to output layer).}
+\item{time.frames}{The number of time frames to build the recurrent neural network. If e.g., time.frame = 2, then the value 
+y(t) is a function of x(t) and x(t-1). The time frames stack in the input array prior to the input neurons or channels (in conv. layers). 
+See \code{\link[keras]{layer_simple_rnn}},\code{\link[keras]{layer_lstm}} or \code{\link[keras]{layer_conv_lstm_2d}}.}
 }
 \value{
 A named list with components \code{y} (the predictand), \code{x.global} (global predictors) and other attributes. See Examples.

@@ -28,7 +28,7 @@ downscaleCV.keras(
 
 \item{model}{A keras sequential or functional model.}
 
-\item{MC}{A numeric value, default to NULL. The number of Monte-Carlo samples in case the model
+\item{MC}{Currently on implementation. A numeric value, default to NULL. The number of Monte-Carlo samples in case the model
 is a bayesian neural network (note that any network containing dropout is equivalent 
 mathematically to a bayesian neural network). We refer the reader to the 
 custom \code{\link[downscaleR.keras]{concreteDropout}} and \code{\link[downscaleR.keras]{spatialConcreteDropout}} of how to learn 
