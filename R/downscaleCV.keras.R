@@ -196,7 +196,7 @@ downscaleCV.keras <- function(x, y, model,MC = NULL,
   data <- dataSplit(x,y, f = folds, type = type)
   p <- lapply(1:length(data), FUN = function(xx) {
     message(paste("fold:",xx,"-->","calculating..."))
-    modelCV <- model
+    modelCV <- clone_model(model)
     xT <- data[[xx]]$train$x ; yT <- data[[xx]]$train$y
     xt <- data[[xx]]$test$x  ; yt <- data[[xx]]$test$y
     yT <- filterNA(yT)
