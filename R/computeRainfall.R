@@ -97,22 +97,28 @@ computeRainfall <- function(log_alpha,
         alpha_mat <- array3Dto2Dmat(exp(log_alpha$Data))
         beta_mat <- array3Dto2Dmat(exp(log_beta$Data))
       } else {
-        alpha_mat <- exp(log_alpha$Data)
-        beta_mat <- exp(log_beta$Data)
+        alpha_mat <- exp(log_alpha$Data) %>% as.matrix()
+        beta_mat <- exp(log_beta$Data) %>% as.matrix()
       }
+      
       aux <- matrix(nrow = ntime,ncol = ncol(alpha_mat))
       for (zz in 1:ncol(alpha_mat)) {
         aux[,zz] <- rgamma(n = ntime, 
                            shape = alpha_mat[,zz], 
                            scale = beta_mat[,zz])
       }
-      if (isRegular(log_alpha)) amo$Data <- mat2Dto3Darray(aux,x = amo$xyCoords$x, y = amo$xyCoords$y)
+      if (isRegular(log_alpha)) {
+        amo$Data <- mat2Dto3Darray(aux,x = amo$xyCoords$x, y = amo$xyCoords$y)
+      } else {
+        amo$Data <- aux
+        attr(amo$Data, "dimensions") <- c("time", "loc")
+      }
     } else {
       amo$Data <- exp(log_alpha$Data)*exp(log_beta$Data)   
     }
     if (!is.null(bias)) amo <- amo %>% gridArithmetics(bias,operator = "+")
     return(amo)
-  }) %>% bindGrid() %>% redim(drop = TRUE)
+  }) %>% bindGrid(dimension = "member") %>% redim(drop = TRUE)
   out$Variable$varName <- "pr"
   return(out)
 }

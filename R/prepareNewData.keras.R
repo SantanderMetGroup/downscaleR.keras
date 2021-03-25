@@ -33,6 +33,7 @@
 #' @family downscaling.keras.helpers
 #' @importFrom transformeR getVarNames subsetGrid redim getShape getCoordinates grid2PCs getRefDates array3Dto2Dmat grid2PCs
 #' @importFrom magrittr %>% extract2 
+#' @importFrom downscaleR prepareNewData
 #' @examples \donttest{
 #' # Loading data
 #' require(climate4R.datasets)
@@ -71,21 +72,25 @@ prepareNewData.keras <- function(newdata,data.structure) {
   newdata.global.list <- lapply(1:n.mem, function(j) {
     newdata <- subsetGrid(newdata,members = j) %>% redim(member = FALSE, var = TRUE)
     if (first.connection == "dense") {
-      if (isRegular(newdata)) {
-        x.global <- lapply(getVarNames(newdata), FUN = function(z){
-          array3Dto2Dmat(subsetGrid(newdata,var = z)$Data)
-        }) %>% abind::abind(along = 0)
-      } else{
-        x.global <- newdata$Data
+      if (any(names(attributes(data.structure$x.global)) == "data.structure")) {
+        newdata <- do.call("prepareNewData", args = list("newdata" = newdata, "data.structure" =  attr(data.structure$x.global,"data.structure")))
+        attr(data.structure$x.global,"data.structure") <- NULL  
+        if (!is.null(newdata$x.local)) {
+          x.global <- cbind(newdata$x.global$member_1,newdata$x.local[[1]]$member_1)
+        } else {
+          x.global <- newdata$x.global$member_1
+        }
+      } else {
+        if (isRegular(newdata)) {
+          x.global <- lapply(getVarNames(newdata), FUN = function(z){
+            array3Dto2Dmat(subsetGrid(newdata,var = z)$Data)
+          }) %>% abind::abind(along = 0)
+        } else{
+          x.global <- newdata$Data
+        } 
+        x.global <- x.global %>% aperm(c(2,3,1)) 
+        dim(x.global) <- c(dim(x.global)[1],prod(dim(x.global)[2:3]))
       } 
-      
-      if (channels == "last")  x.global <- x.global %>% aperm(c(2,3,1)) 
-      if (channels == "first") x.global <- x.global %>% aperm(c(2,1,3))
-      dim(x.global) <- c(dim(x.global)[1],prod(dim(x.global)[2:3]))
-      ind.xx <- (!apply(x.global,MARGIN = 2,anyNA)) %>% which()
-      if (!all(ind.xx %in% ind.x)) stop("New data contains NA in other gridpoints that those found in the training data")
-      x.global <- x.global[,ind.x]
-      
     } else if (first.connection == "conv") {
       if (!isRegular(newdata)) stop("Object 'newdata' must be a regular grid")
       if (anyNA(newdata$Data)) stop("NaNs were found in object: newdata")
@@ -107,7 +112,6 @@ prepareNewData.keras <- function(newdata,data.structure) {
   })
   names(newdata.global.list) <- paste("member", 1:n.mem, sep = "_")
   predictor.list  <- list("x.global" = newdata.global.list)
-  if (first.connection == "dense") attr(predictor.list,"indices_noNA_x") <- ind.x
   if (last.connection  == "dense") attr(predictor.list,"indices_noNA_y") <- attr(data.structure,"indices_noNA_y")
   attr(predictor.list,"first.connection") <- first.connection
   attr(predictor.list,"last.connection") <- last.connection

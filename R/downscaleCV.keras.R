@@ -155,6 +155,41 @@
 #'            fit.args = list(batch_size = 100, epochs = 100, validation_split = 0.1),
 #'            loss = "bernouilliGammaLoss",
 #'            binarySerie = TRUE,condition = "GE",threshold = 1)
+#'            
+#' # Example with PCs and local predictors
+#' data("VALUE_Iberia_pr")
+#' y <- VALUE_Iberia_pr
+#' 
+#' inputs <- layer_input(shape = 27)
+#'  hidden <- inputs %>% 
+#'    layer_dense(units = 25, activation = 'relu') %>%  
+#'    layer_dense(units = 10, activation = 'relu') 
+#'  outputs1 <- layer_dense(hidden,units = 1, activation = "sigmoid")
+#'  outputs2 <- layer_dense(hidden,units = 1)
+#'  outputs3 <- layer_dense(hidden,units = 1)
+#'  outputs <- layer_concatenate(list(outputs1,outputs2,outputs3))
+#'  model <- keras_model(inputs = inputs, outputs = outputs)
+#'  
+#'  pred <- lapply(1:getShape(y,"loc"), FUN = function(z) {
+#'    y <- subsetGrid(y,station.id = y$Metadata$station_id[z]) %>% gridArithmetics(0.99,operator = "-") %>% binaryGrid("GT",0,partial = TRUE) 
+#'    pred <- downscaleCV.keras(x, y, model,
+#'                              sampling.strategy = "kfold.chronological", folds = 4, 
+#'                              scaleGrid.args = list(type = "standardize"),
+#'                              prepareData.keras.args = list(first.connection = "dense",
+#'                                                            last.connection = "dense",
+#'                                                            spatial.predictors = list(n.eofs = 15, which.combine = getVarNames(x)),
+#'                                                            local.predictors = list(n = 4, vars = getVarNames(x))),
+#'                              compile.args = list(loss = bernouilliGammaLoss(last.connection = "dense"), 
+#'                                                  optimizer = optimizer_adam()),
+#'                              fit.args = list(batch_size = 100, epochs = 100, validation_split = 0.1),
+#'                              loss = "bernouilliGammaLoss") 
+#'    pred_bin <- binaryGrid(subsetGrid(pred, var = "p"), simulate = TRUE)
+#'    pred_amo <- computeRainfall(log_alpha = subsetGrid(pred, var = "log_alpha"),
+#'                                log_beta = subsetGrid(pred, var = "log_beta"),
+#'                                simulate = TRUE, 
+#'                                bias = 0.99) %>% redim(member = FALSE, loc = TRUE)
+#'    pred <- gridArithmetics(pred_amo,pred_bin)
+#'  }) %>% bindGrid(dimension = "loc") %>% redim(drop = TRUE)
 #' }            
 downscaleCV.keras <- function(x, y, model,MC = NULL,
                         sampling.strategy = "kfold.chronological", folds = 4, 

@@ -15,3 +15,5 @@
  * donttest in examples with require(climate4R.datasets)
  * new function: computeTemperature.R
  * add time.frames in prepareData.keras and prepareNewData.keras for recurrent neural networks
+ * prepareData.keras and prepareNewData.keras now adapted to compute PCs and select nearest neighbours
+ * new dependency: downscaleR(>=3.1.0)

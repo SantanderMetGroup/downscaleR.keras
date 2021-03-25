@@ -7,6 +7,10 @@
 prepareData.keras(
   x,
   y,
+  global.vars = NULL,
+  combined.only = TRUE,
+  spatial.predictors = NULL,
+  local.predictors = NULL,
   first.connection = c("dense", "conv"),
   last.connection = c("dense", "conv"),
   channels = c("first", "last"),
@@ -17,6 +21,38 @@ prepareData.keras(
 \item{x}{A grid (usually a multigrid) of predictor fields}
 
 \item{y}{A grid (usually a stations grid, but not necessarily) of observations (predictands)}
+
+\item{global.vars}{An optional character vector with the short names of the variables of the input \code{x} 
+multigrid to be retained as global predictors (use the \code{\link{getVarNames}} helper if not sure about variable names).
+This argument just produces a call to \code{\link[transformeR]{subsetGrid}}, but it is included here for better
+flexibility in downscaling experiments (predictor screening...). For instance, it allows to use some 
+specific variables contained in \code{x} as local predictors and the remaining ones, specified in \code{subset.vars},
+as either raw global predictors or to construct the combined PC.}
+
+\item{combined.only}{Optional, and only used if spatial.predictors parameters are passed. Should the combined PC be used as the only
+global predictor? Default to TRUE. Otherwise, the combined PC constructed with \code{which.combine} argument in 
+\code{\link{prinComp}} is append to the PCs of the remaining variables within the grid.}
+
+\item{spatial.predictors}{Default to \code{NULL}, and not used. Otherwise, a named list of arguments in the form \code{argument = value},
+with the arguments to be passed to \code{\link[transformeR]{prinComp}} to perform Principal Component Analysis
+of the predictors grid (\code{x}). See Details on principal component analysis of predictors.}
+
+\item{local.predictors}{Default to \code{NULL}, and not used. Otherwise, a named list of arguments in the form \code{argument = value},
+with the following arguments:
+\itemize{
+  \item \code{vars}: names of the variables in \code{x} to be used as local predictors
+  \item \code{fun}: Optional. Aggregation function for the selected local neighbours.
+  The aggregation function is specified as a list, indicating the name of the aggregation function in
+   first place (as character), and other optional arguments to be passed to the aggregation function.
+   For instance, to compute the average skipping missing values: \code{fun = list(FUN= "mean", na.rm = TRUE)}.
+   Default to NULL, meaning that no aggregation is performed.
+  \item \code{n}: Integer. Number of nearest neighbours to use. If a single value is introduced, and there is more
+  than one variable in \code{vars}, the same value is used for all variables. Otherwise, this should be a vector of the same
+  length as \code{vars} to indicate a different number of nearest neighbours for different variables.
+}
+Note that grid 'y' has to be single-site, otherwise this will cause errors in the model training, since downscaleTrain.keras
+is designed to store only one model at a time due to Keras particularities. If your desire is to downscale to multiple-sites
+for independent models, please loop over this function for the different sites.}
 
 \item{first.connection}{A string. Possible values are c("dense","conv") depending on whether 
 the first connection (i.e., input layer to first hidden layer) is dense or convolutional.}
@@ -33,7 +69,8 @@ y(t) is a function of x(t) and x(t-1). The time frames stack in the input array 
 See \code{\link[keras]{layer_simple_rnn}},\code{\link[keras]{layer_lstm}} or \code{\link[keras]{layer_conv_lstm_2d}}.}
 }
 \value{
-A named list with components \code{y} (the predictand), \code{x.global} (global predictors) and other attributes. See Examples.
+A named list with components \code{y} (the predictand), \code{x.global} (global predictors) and other attributes. For the case when 
+spatial and local predictors are both computed, these are stacked together in the \code{x.global} object.
 }
 \description{
 Configuration of data for flexible downscaling keras experiment definition
@@ -59,6 +96,13 @@ data <- prepareData.keras(x = x, y = y,
                           channels = "last")
 # We can visualize the outputield not imported f
 str(data)
+
+# We can call prepareData.keras to compute PCs over the predictor field
+data <- prepareData.keras(x = x, y = y, 
+                          spatial.predictors = list(v.exp = 0.95),   # the EOFs that explain the 95\% of the total variance
+                          first.connection = "dense",
+                          last.connection = "dense",
+                          channels = "last")
 }
 }
 \seealso{
