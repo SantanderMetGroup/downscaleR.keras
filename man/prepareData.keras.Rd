@@ -83,6 +83,7 @@ Remove days containing NA in at least one predictand site.
 require(climate4R.datasets) 
 # Loading data
 require(transformeR)
+require(downscaleR)
 data("VALUE_Iberia_tas")
 y <- VALUE_Iberia_tas
 data("NCEP_Iberia_hus850", "NCEP_Iberia_psl", "NCEP_Iberia_ta850")

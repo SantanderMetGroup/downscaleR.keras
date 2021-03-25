@@ -84,6 +84,7 @@
 #' @examples \donttest{
 #' # Loading data
 #' require(climate4R.datasets)
+#' require(downscaleR)
 #' require(transformeR)
 #' data("VALUE_Iberia_tas")
 #' y <- VALUE_Iberia_tas
