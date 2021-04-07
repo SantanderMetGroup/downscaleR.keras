@@ -121,10 +121,12 @@ prepareData.keras <- function(x,y,
     if (any(!is.null(global.vars) || !is.null(spatial.predictors) || !is.null(local.predictors))) {
       x <- do.call("prepareData", args = list("x" = x, "y" = y, "global.vars" = global.vars, "spatial.predictors" = spatial.predictors, "local.predictors" = local.predictors))  
       x$y <- NULL
-      if (!is.null(local.predictors)) {
+      if (attr(x, "nature") == "mix") {
         x.global <- cbind(x$x.global,x$x.local[[1]]$member_1)
-      } else {
+      } else if (attr(x, "nature") == "global") {
         x.global <- x$x.global
+      } else if (attr(x, "nature") == "local") {
+        x.global <- x$x.local[[1]]$member_1
       }
       attr(x.global,"data.structure") <- x
     } else {

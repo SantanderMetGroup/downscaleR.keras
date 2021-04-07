@@ -74,12 +74,15 @@ prepareNewData.keras <- function(newdata,data.structure) {
     if (first.connection == "dense") {
       if (any(names(attributes(data.structure$x.global)) == "data.structure")) {
         newdata <- do.call("prepareNewData", args = list("newdata" = newdata, "data.structure" =  attr(data.structure$x.global,"data.structure")))
-        attr(data.structure$x.global,"data.structure") <- NULL  
-        if (!is.null(newdata$x.local)) {
+        if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "mix") {
           x.global <- cbind(newdata$x.global$member_1,newdata$x.local[[1]]$member_1)
-        } else {
+        } else if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "global") {
           x.global <- newdata$x.global$member_1
+        } else if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "local") {
+          x.global <- newdata$x.local[[1]]$member_1
         }
+        attr(data.structure$x.global,"data.structure") <- NULL  
+        
       } else {
         if (isRegular(newdata)) {
           x.global <- lapply(getVarNames(newdata), FUN = function(z){
