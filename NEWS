@@ -4,7 +4,7 @@
  * NEWS
  * minor changes in prepareNewData.keras and relevanceMaps
  
-## v1.0.0
+## v1.0.0 (26 Apr 2021)
  * gaussianLoss(), which minimizes the negative log-likelihood of a Gaussian distribution.
  * downscalePredictHidden.keras function to obtain the output of the hidden layers and the kernels (in conv layers)
  * Function name changed: bernouilliGamma.loss_function --> bernouilliGammaLoss
@@ -16,4 +16,4 @@
  * new function: computeTemperature.R
  * add time.frames in prepareData.keras and prepareNewData.keras for recurrent neural networks
  * prepareData.keras and prepareNewData.keras now adapted to compute PCs and select nearest neighbours
- * new dependency: downscaleR(>=3.1.0)
+ * new dependency: downscaleR(>=3.3.2)

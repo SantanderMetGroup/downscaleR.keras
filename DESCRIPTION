@@ -1,42 +1,28 @@
 Package: downscaleR.keras
 Depends:
     R(>= 3.1.0),
-    transformeR(>= 1.5.0),
-    downscaleR(>= 3.1.0),
+    transformeR(>= 2.1.0),
+    downscaleR(>= 3.3.2),
     keras(>= 2.2.2),
     tensorflow(>= 2.0.0)
 Imports:
     abind,
     MASS,
     utils,
-    parallel,
     stats,
     magrittr,
 Suggests:
     loadeR,
     climate4R.datasets,
-    visualizeR,
-    knitr,
-    rmarkdown
+    visualizeR
 Type: Package
 Title: A climate4R package for statistical downscaling <http://meteo.unican.es/climate4r>
-Version: 0.0.0
-Date: 2020-02-24
+Version: 1.0.0
+Date: 2021-04-26
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
-    "Joaquín Bedia <bediaj@unican.es> [aut, cre]",
-    "Jonas Bhend <Jonas.Bhend@meteoswiss.ch> [ctb]",
-    "Matteo De Felice <matteo.defelice@enea.it> [ctb]",
-    "Jesus Fernández <fernandej@unican.es> [ctb]",
-    "Maria Dolores Frías <friasmd@unican.es> [ctb]",
-    "José Manuel Gutiérrez <gutierjm@unican.es> [aut]",
-    "Sixto Herrera <sixto@predictia.es> [aut]",
-    "Maialen Iturbide <miturbide@ifca.unican.es> [aut]",
-    "Rodrigo Manzanas <rmanzanas@ifca.unican.es> [aut]",
-    "Jorge B. Medina <bmedina@ifca.unican.es> [aut]",
-    "Beata Szabo-Takacs <szabo.b@czechglobe.cz> [ctb]",
-    "Max Tuni <max@predictia.es> [ctb]"))
-BugReports: https://github.com/SantanderMetGroup/downscaleR/issues
+    "Jorge B. Medina <bmedina@ifca.unican.es> [aut]"))
+BugReports: https://github.com/SantanderMetGroup/downscaleR.keras/issues
 URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
 Description: Tools for climate downscaling with deep neural networks models building on keras, as part of the climate4R bundle (<http://meteo.unican.es/climate4R>).
