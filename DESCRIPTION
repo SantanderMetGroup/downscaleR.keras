@@ -21,7 +21,7 @@ Version: 1.0.0
 Date: 2021-04-26
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
-    "Jorge B. Medina <bmedina@ifca.unican.es> [aut]"))
+    "Jorge B. Medina <bmedina@ifca.unican.es> [cre]"))
 BugReports: https://github.com/SantanderMetGroup/downscaleR.keras/issues
 URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
