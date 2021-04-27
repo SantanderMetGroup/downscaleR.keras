@@ -14,7 +14,7 @@ Imports:
 Suggests:
     loadeR,
     climate4R.datasets,
-    visualizeR
+    visualizeR,
 Type: Package
 Title: A climate4R package for statistical downscaling <http://meteo.unican.es/climate4r>
 Version: 1.0.0
@@ -29,4 +29,3 @@ Description: Tools for climate downscaling with deep neural networks models buil
 License: GPL (>= 3)
 LazyData: true
 RoxygenNote: 7.1.0
-VignetteBuilder: knitr
