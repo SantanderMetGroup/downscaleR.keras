@@ -147,7 +147,8 @@ downscalePredict.keras <- function(newdata,
     }
   })
   
-  pred <- do.call("bindGrid",pred) %>% redim(drop = TRUE)
+  if (isRegular(template)) pred <- do.call("bindGrid",pred) %>% redim(drop = TRUE)
+  if (!isRegular(template)) pred <- do.call("bindGrid",pred) %>% redim(drop = TRUE) %>% redim(member = FALSE, loc = TRUE)
   pred$Dates <- attr(newdata,"dates")
   n.vars <- getShape(redim(pred,var = TRUE),"var")
   if (n.vars > 1) {

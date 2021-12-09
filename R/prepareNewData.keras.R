@@ -74,12 +74,14 @@ prepareNewData.keras <- function(newdata,data.structure) {
     if (first.connection == "dense") {
       if (any(names(attributes(data.structure$x.global)) == "data.structure")) {
         newdata <- do.call("prepareNewData", args = list("newdata" = newdata, "data.structure" =  attr(data.structure$x.global,"data.structure")))
-        if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "mix") {
+        if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "spatial+local") {
           x.global <- cbind(newdata$x.global$member_1,newdata$x.local[[1]]$member_1)
-        } else if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "global") {
+        } else if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "spatial") {
           x.global <- newdata$x.global$member_1
         } else if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "local") {
           x.global <- newdata$x.local[[1]]$member_1
+        } else if(attr(x,"nature") == "raw"){
+          x.global <- x$x.global
         }
         attr(data.structure$x.global,"data.structure") <- NULL  
         

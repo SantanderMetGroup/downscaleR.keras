@@ -17,3 +17,6 @@
  * add time.frames in prepareData.keras and prepareNewData.keras for recurrent neural networks
  * prepareData.keras and prepareNewData.keras now adapted to compute PCs and select nearest neighbours
  * new dependency: downscaleR(>=3.3.2)
+ 
+ ## v1.0.1 (on-going)
+  * Bugs in prepareData.keras, prepareNewData.keras, downscaleCV.keras and downscalePredict.keras --> adapted to single-site

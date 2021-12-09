@@ -272,5 +272,10 @@ downscaleCV.keras <- function(x, y, model,MC = NULL,
     rm(modelCV)
     return(out)
   }) %>% bindGrid(dimension = "time")
+  if (!isRegular(y)) {
+    if (getShape(y,"loc") == 1) {
+      p <- redim(p, member = FALSE, loc = TRUE)
+    }
+  }
   return(p)
 }
