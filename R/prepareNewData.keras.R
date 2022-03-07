@@ -80,8 +80,8 @@ prepareNewData.keras <- function(newdata,data.structure) {
           x.global <- newdata$x.global$member_1
         } else if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "local") {
           x.global <- newdata$x.local[[1]]$member_1
-        } else if(attr(x,"nature") == "raw"){
-          x.global <- x$x.global
+        } else if (attr(attr(data.structure$x.global, "data.structure"),"nature") == "raw"){
+          x.global <- newdata$x.global$member_1
         }
         attr(data.structure$x.global,"data.structure") <- NULL  
         
