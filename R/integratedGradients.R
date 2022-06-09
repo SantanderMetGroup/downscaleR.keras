@@ -52,7 +52,8 @@
 #' the desired site where to compute the gradients.
 #' e.g., site = data.frame("x" = -3.82, "y" = 43.46)
 #' @param saliency.fun Apply a function to the resulting saliency maps. 
-#' e.g., saliency_fun = list(FUN = "mean", na.rm = TRUE). 
+#' e.g., saliency.fun = list(FUN = "mean", na.rm = TRUE). 
+#' @param batch An integer indicating the size of the batch. Default to NULL.
 #' @details This function relies on keras, which is a high-level neural networks 
 #' API capable of running on top of tensorflow, CNTK or theano. There are official 
 #' \href{https://keras.rstudio.com/}{keras tutorials} regarding how to build deep 
@@ -73,6 +74,7 @@
 #' @import keras
 #' @importFrom transformeR climatology
 #' @importFrom magrittr %<>% %>%
+#' @importFrom abind abind
 #' @export
 #' @examples \donttest{
 #' require(climate4R.datasets)
@@ -166,7 +168,8 @@ integratedGradients <- function(x = x,
                                                   coords = NULL
                                 ),
                                 site = NULL,
-                                saliency.fun = NULL) {
+                                saliency.fun = NULL,
+                                batch = NULL) {
   
   ### Eliminate the 'member' dimension
   if (getShape(x, "member") > 1) {
@@ -225,18 +228,32 @@ integratedGradients <- function(x = x,
   }
   
   ### Compute the integrated gradients
-  array_int_grads <- get_integrated_gradients(input = x_input, 
-                                              site = output_neuron, 
-                                              model = model,
-                                              baseline = baseline, 
-                                              num_steps = num_steps) 
+  array_int_grads <- if (is.null(batch)) {
+    get_integrated_gradients(input = x_input, 
+                             site = output_neuron, 
+                             model = model,
+                             baseline = baseline, 
+                             num_steps = num_steps) 
+  } else {
+    samples <- dim(x_input)[1]
+    init_batches <- seq(1, samples, batch)
+    end_batches <- c(seq(batch, samples, batch), samples) %>% unique()
+    mapply(init_batches, end_batches, FUN = function(init_batch, end_batch) {
+      print(sprintf("Batch %i/%i", which(init_batch == init_batches), length(init_batches)))
+      get_integrated_gradients(input = x_input[init_batch:end_batch,,,], 
+                               site = output_neuron, 
+                               model = model,
+                               baseline = baseline, 
+                               num_steps = num_steps)      
+    }) %>% abind::abind(along = 1)
+  }
   
   ### Verify the axiom of completeness
-  axiom_completeness(input = x_input,
-                     site = output_neuron,
-                     model = model,
-                     baseline = NULL,
-                     integrated.gradients = array_int_grads)
+  # axiom_completeness(input = x_input,
+  #                    site = output_neuron,
+  #                    model = model,
+  #                    baseline = NULL,
+  #                    integrated.gradients = array_int_grads)
   
   ### Store the integrated gradients in a climate4R object
   if (getShape(x, "var") > 1) {
