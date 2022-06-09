@@ -196,17 +196,29 @@ integratedGradients <- function(x = x,
   }
   
   ### Match desired 'x,y' coordinated with output neuron
-  output_neuron <- if (is.data.frame(site)) { ### for irregular predictand grids
-    coords_trainingSites <- model.info$coords[model.info[["ind_TrainingPredictandSites"]], ]
-    # dist_to_trainingSites <- sapply(1:nrow(coords_trainingSites), FUN = function(site_training) {
-    #   dist(rbind(coords_trainingSites[site_training,], site))
-    # })
-    # which(dist_to_trainingSites == min(dist_to_trainingSites))
-    ind_x <- which(site$x == coords_trainingSites$x)
-    ind_y <- which(site$y == coords_trainingSites$y)
-    intersect(ind_x, ind_y)
-  } else if (is.list(site)) { ### for regular predictand grids
-    ### to do...
+  output_neuron <- if (is.data.frame(site)) { 
+    
+    if (is.data.frame(model.info[["coords"]])) {### for irregular predictand grids
+      coords_trainingSites <- model.info$coords[model.info[["ind_TrainingPredictandSites"]], ]
+      ind_x <- which(site$x == coords_trainingSites$x)
+      ind_y <- which(site$y == coords_trainingSites$y)
+      intersect(ind_x, ind_y)
+      
+    } else if (is.list(model.info[["coords"]])) { ### for regular predictand grids
+      ind_coords_x <- which(site$x == model.info[["coords"]]$x)
+      ind_coords_y <- which(site$y == model.info[["coords"]]$y)
+      aux_mat <- array(FALSE, dim = c(length(y$xyCoords$x), length(y$xyCoords$y)))
+      aux_mat[ind_coords_x, ind_coords_y] <- TRUE
+      aux_vector <- as.vector(aux_mat)[model.info[["ind_TrainingPredictandSites"]]]
+      out_neuron <- which(aux_vector)
+      if (length(out_neuron) == 0) {
+        stop("The selected site was not optimized during the training phase and 
+            therefore is not represented by any output neuron of the neural
+            network.") 
+      } else {
+        out_neuron 
+      }
+    }  
     
   } else {
     site
