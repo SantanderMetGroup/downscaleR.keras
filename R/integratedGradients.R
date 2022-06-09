@@ -122,7 +122,6 @@
 #' # Compute the saliency maps for 
 #' # the selected site....
 #' saliency_grids <- integratedGradients(x = x_scaled,
-#'                                       y = y,
 #'                                       model = model,
 #'                                       baseline = NULL,
 #'                                       num_steps = 500,
@@ -142,9 +141,10 @@
 #' # Display the saliency maps for 
 #' # the selected site....
 #' require(visualizeR)
+#' require(sp)
 #' spatialPlot(climatology(saliency_grids, clim.fun = list(FUN = "abs")), 
 #'             backdrop.theme = "coastline",
-#'             sp.layout = list(list(sp::SpatialPoints(y$xyCoords[site,]),
+#'             sp.layout = list(list(SpatialPoints(y$xyCoords[site,]),
 #'                                   first = FALSE,
 #'                                   col = "black",
 #'                                   pch = 16)
@@ -207,7 +207,7 @@ integratedGradients <- function(x = x,
     } else if (is.list(model.info[["coords"]])) { ### for regular predictand grids
       ind_coords_x <- which(site$x == model.info[["coords"]]$x)
       ind_coords_y <- which(site$y == model.info[["coords"]]$y)
-      aux_mat <- array(FALSE, dim = c(length(y$xyCoords$x), length(y$xyCoords$y)))
+      aux_mat <- array(FALSE, dim = c(length(model.info[["coords"]]$x), length(model.info[["coords"]]$y)))
       aux_mat[ind_coords_x, ind_coords_y] <- TRUE
       aux_vector <- as.vector(aux_mat)[model.info[["ind_TrainingPredictandSites"]]]
       out_neuron <- which(aux_vector)
