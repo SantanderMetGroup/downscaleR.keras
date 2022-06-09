@@ -277,7 +277,7 @@ integratedGradients <- function(x = x,
   attr(c4r_int_grads$Data, "dimensions") <- attr(x$Data, "dimensions")
   
   ### Apply saliency aggregated function
-  c4r_int_grads %<>% climatology(clim.fun = saliency.fun)
+  if (! is.null(saliency.fun)) c4r_int_grads %<>% climatology(clim.fun = saliency.fun)
   
   ### Return
   return(c4r_int_grads)  
