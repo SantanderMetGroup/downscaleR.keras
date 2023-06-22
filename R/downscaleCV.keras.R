@@ -22,9 +22,7 @@
 #' @param y The observations dataset. It should be an object as returned by \pkg{loadeR}.
 #' @param MC Currently on implementation. A numeric value, default to NULL. The number of Monte-Carlo samples in case the model
 #' is a bayesian neural network (note that any network containing dropout is equivalent 
-#' mathematically to a bayesian neural network). We refer the reader to the 
-#' custom \code{\link[downscaleR.keras]{concreteDropout}} and \code{\link[downscaleR.keras]{spatialConcreteDropout}} of how to learn 
-#' the dropout probability.
+#' mathematically to a bayesian neural network). 
 #' @param model A keras sequential or functional model. 
 #' @param sampling.strategy Specifies a sampling strategy to define the training and test subsets. Possible values are 
 #' \code{"kfold.chronological"} (the default), \code{"kfold.random"}, \code{"leave-one-year-out"} and NULL.

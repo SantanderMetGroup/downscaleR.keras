@@ -13,7 +13,8 @@ integratedGradients(
     "last", time.frames = NULL, nature = NULL, ind_TrainingPredictandSites = NULL,
     ind_TrainingPredictorSites = NULL, data.structure = NULL, coords = NULL),
   site = NULL,
-  saliency.fun = NULL
+  saliency.fun = NULL,
+  batch = NULL
 )
 }
 \arguments{
@@ -56,7 +57,9 @@ the desired site where to compute the gradients.
 e.g., site = data.frame("x" = -3.82, "y" = 43.46)}
 
 \item{saliency.fun}{Apply a function to the resulting saliency maps. 
-e.g., saliency_fun = list(FUN = "mean", na.rm = TRUE).}
+e.g., saliency.fun = list(FUN = "mean", na.rm = TRUE).}
+
+\item{batch}{An integer indicating the size of the batch. Default to NULL.}
 }
 \value{
 The integrated gradients in a climate4R object.
