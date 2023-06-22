@@ -22,5 +22,6 @@
   * Bugs in prepareData.keras, prepareNewData.keras, downscaleCV.keras and downscalePredict.keras --> adapted to single-site
   * Documentation updates
   
-  
+ ## v1.1.1 (22 Jun 2023)
+  * Update of the DESCRIPTION file
   

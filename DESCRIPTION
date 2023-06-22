@@ -18,8 +18,8 @@ Suggests:
     sp,
 Type: Package
 Title: A climate4R package for statistical downscaling <http://meteo.unican.es/climate4r>
-Version: 1.0.0
-Date: 2021-04-26
+Version: 1.1.1
+Date: 2023-06-22
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Jorge B. Medina <bmedina@ifca.unican.es> [cre]"))
