@@ -1,6 +1,6 @@
 Package: downscaleR.keras
 Depends:
-    R(>= 3.1.0),
+    R(>= 3.5.0),
     transformeR(>= 2.1.0),
     downscaleR(>= 3.3.2),
     keras(>= 2.2.2),
@@ -15,6 +15,7 @@ Suggests:
     loadeR,
     climate4R.datasets,
     visualizeR,
+    sp,
 Type: Package
 Title: A climate4R package for statistical downscaling <http://meteo.unican.es/climate4r>
 Version: 1.0.0
@@ -26,6 +27,6 @@ BugReports: https://github.com/SantanderMetGroup/downscaleR.keras/issues
 URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
 Description: Tools for climate downscaling with deep neural networks models building on keras, as part of the climate4R bundle (<http://meteo.unican.es/climate4R>).
-License: GPL (>= 3)
+License: file LICENSE
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2
